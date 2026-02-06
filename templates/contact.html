@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LawConnect AI | Contact Us</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+
+  <style>
+    :root {
+      --primary-dark: #042a2b;
+      --primary-accent: #00a8e8;
+      --secondary-accent: #ffd166;
+      --background-light: #f8fafc;
+      --text-dark: #1e2a32;
+    }
+
+    * {
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background: linear-gradient(135deg, #e6f7ff, #ffffff);
+      color: var(--text-dark);
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: auto;
+      padding: 3rem 2rem;
+    }
+
+    /* Benefits */
+    .benefits {
+      background: linear-gradient(90deg, var(--primary-accent), #028090);
+      color: #fff;
+      padding: 3rem;
+      border-radius: 20px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+      margin-bottom: 3rem;
+    }
+
+    .benefits h1 {
+      font-size: 2.3rem;
+      margin-bottom: 1rem;
+    }
+
+    .typing-list {
+      list-style: none;
+      font-size: 1.15rem;
+      line-height: 1.9;
+      margin-top: 1.2rem;
+    }
+
+    .typing-list li::before {
+      content: "✔ ";
+      color: var(--secondary-accent);
+      font-weight: bold;
+    }
+
+    .typing-cursor::after {
+      content: "|";
+      margin-left: 4px;
+      animation: blink 0.8s infinite;
+    }
+
+    @keyframes blink {
+      50% { opacity: 0; }
+    }
+
+    /* Section titles */
+    h2 {
+      margin: 2rem 0 1rem;
+      border-bottom: 3px solid var(--secondary-accent);
+      display: inline-block;
+      padding-bottom: 5px;
+    }
+
+    /* Developers */
+    .dev-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 2rem;
+      margin-top: 1.5rem;
+    }
+
+    .dev-card {
+      background: rgba(255,255,255,0.9);
+      padding: 1.5rem;
+      border-radius: 16px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+      transition: 0.3s;
+    }
+
+    .dev-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+    }
+
+    .dev-card i {
+      font-size: 2rem;
+      color: var(--primary-accent);
+      margin-bottom: 0.5rem;
+    }
+
+    /* Contact form */
+    .contact-form {
+      background: rgba(255,255,255,0.95);
+      padding: 2rem;
+      border-radius: 18px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+      margin-top: 2rem;
+    }
+
+    .contact-form input,
+    .contact-form textarea {
+      width: 100%;
+      padding: 0.8rem;
+      margin-bottom: 1rem;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+    }
+
+    .contact-form button {
+      background: var(--primary-accent);
+      color: #fff;
+      border: none;
+      padding: 0.7rem 1.5rem;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 1rem;
+    }
+
+    .contact-form button:hover {
+      background: #028090;
+    }
+
+    footer {
+      text-align: center;
+      margin-top: 3rem;
+      padding-top: 1rem;
+      border-top: 1px solid #ddd;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="container">
+
+    <!-- BENEFITS -->
+    <section class="benefits">
+      <h1>Why LawConnect AI?</h1>
+      <ul id="typingList" class="typing-list"></ul>
+    </section>
+
+    <!-- DEVELOPERS -->
+    <section>
+      <h2>👨‍💻 Developers</h2>
+      <div class="dev-grid">
+
+        <div class="dev-card">
+          <i class="fas fa-user-circle"></i>
+          <h3>Narasimha</h3>
+          <p>Reg No: <strong>RA2311026010658</strong></p>
+        </div>
+
+        <div class="dev-card">
+          <i class="fas fa-user-circle"></i>
+          <h3>Manas</h3>
+          <p>Reg No: <strong>RA2311026010647</strong></p>
+        </div>
+
+        <div class="dev-card">
+          <i class="fas fa-user-circle"></i>
+          <h3>Dhrouv</h3>
+          <p>Reg No: <strong>RA2311026010625</strong></p>
+        </div>
+
+        <div class="dev-card">
+          <i class="fas fa-user-circle"></i>
+          <h3>Namita</h3>
+          <p>Reg No: <strong>RA2311026010677</strong></p>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- CONTACT FORM -->
+    <section>
+      <h2>📩 Contact Us</h2>
+      <div class="contact-form">
+        <form method="post">
+          <input type="text" placeholder="Your Name" required>
+          <input type="email" placeholder="Your Email" required>
+          <textarea rows="4" placeholder="Your Message" required></textarea>
+          <button type="submit">Send Message</button>
+        </form>
+      </div>
+    </section>
+
+    <footer>
+      © 2025 LawConnect AI | Built with ⚖️ & ❤️
+    </footer>
+
+  </div>
+
+  <!-- TYPING SCRIPT -->
+  <script>
+    const benefits = [
+      "Provides role-based access for Students, Advocates, and Citizens.",
+      "Offers a legal awareness chatbot for general law-related queries.",
+      "Helps citizens understand basic legal procedures.",
+      "Allows advocates to manage cases and clients (demo scope).",
+      "Acts as a digital bridge between citizens and legal professionals.",
+      "Designed for future integration of advanced AI legal assistance."
+    ];
+
+    const list = document.getElementById("typingList");
+    let i = 0, j = 0, li;
+
+    function typeEffect() {
+      if (i >= benefits.length) return;
+
+      if (j === 0) {
+        li = document.createElement("li");
+        li.classList.add("typing-cursor");
+        list.appendChild(li);
+      }
+
+      li.textContent += benefits[i][j];
+      j++;
+
+      if (j === benefits[i].length) {
+        li.classList.remove("typing-cursor");
+        i++;
+        j = 0;
+        setTimeout(typeEffect, 500);
+      } else {
+        setTimeout(typeEffect, 30);
+      }
+    }
+
+    typeEffect();
+  </script>
+
+</body>
+</html>

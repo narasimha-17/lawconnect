@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LawConnect AI | Student Dashboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+  <style>
+    :root {
+      --primary-dark: #053742;
+      --primary-accent: #39A2DB;
+      --secondary-accent: #FFD166;
+      --background-light: #F8FAFC;
+      --text-dark: #1E2A32;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    /* Layout Overhaul: Side-Navigation */
+    body {
+      background: linear-gradient(160deg, #E6F7FF, #FFFFFF); /* Keeping the body gradient for a lighter feel */
+      color: var(--text-dark);
+      display: flex; /* Flex container for sidebar and main-content */
+      min-height: 100vh;
+      overflow-x: hidden;
+      padding: 0;
+    }
+
+    /* New Sidebar Navigation (Fixed) */
+    .sidebar-nav {
+      width: 280px; /* Fixed width for the sidebar */
+      background: linear-gradient(180deg, var(--primary-dark), #002230);
+      color: #fff;
+      padding: 2rem 1.5rem;
+      box-shadow: 4px 0 15px rgba(0, 0, 0, 0.2);
+      display: flex;
+      flex-direction: column;
+      position: fixed; /* Fixed position */
+      height: 100vh;
+      z-index: 100;
+    }
+
+    .sidebar-nav .logo {
+      font-size: 1.9rem;
+      font-weight: 700;
+      margin-bottom: 3rem;
+      padding: 0 0.5rem;
+    }
+
+    .sidebar-nav .logo span {
+      color: var(--secondary-accent);
+    }
+
+    .sidebar-nav .nav-links {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+      flex-grow: 1;
+    }
+
+    .sidebar-nav .nav-links a {
+      color: #fff;
+      text-decoration: none;
+      font-size: 1.1rem;
+      font-weight: 500;
+      padding: 0.8rem 1rem;
+      border-radius: 8px;
+      transition: 0.3s;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .sidebar-nav .nav-links a:hover,
+    .sidebar-nav .nav-links a.active {
+      background: rgba(57, 162, 219, 0.2);
+      color: var(--secondary-accent);
+    }
+    
+    .sidebar-nav .nav-links a.active {
+        border-left: 4px solid var(--secondary-accent);
+    }
+
+    /* User Info at the bottom of the sidebar */
+    .user-info {
+      margin-top: auto;
+      padding-top: 1rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+    }
+
+    .user-info span {
+      color: #fff;
+    }
+
+    .user-avatar {
+      background: var(--secondary-accent);
+      color: var(--primary-dark);
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      font-weight: 600;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      box-shadow: 0 0 10px rgba(255, 209, 102, 0.6);
+      cursor: pointer;
+      transition: transform 0.3s ease;
+    }
+
+    /* Main Content Area */
+    .main-content {
+      margin-left: 280px; /* Offset to make space for the fixed sidebar */
+      padding: 3rem 4rem;
+      flex-grow: 1;
+    }
+
+    /* Dashboard Grid (Main content inside) */
+    main {
+      display: flex;
+      flex-direction: column;
+      gap: 2.5rem;
+      padding: 0;
+    }
+    
+    /* Animations */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Welcome Banner */
+    .welcome-banner {
+      background: linear-gradient(90deg, var(--primary-accent), #2C98A0);
+      border-radius: 20px;
+      padding: 3rem;
+      color: #fff;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+      animation: fadeIn 1s ease-in;
+    }
+
+    .welcome-banner h1 {
+      font-size: 2.3rem;
+      font-weight: 700;
+    }
+
+    .welcome-banner p {
+      margin-top: 0.5rem;
+      font-size: 1.1rem;
+      opacity: 0.9;
+    }
+
+    .welcome-banner .fas {
+      font-size: 4rem;
+      color: var(--secondary-accent);
+      text-shadow: 0 0 15px rgba(255, 209, 102, 0.8);
+    }
+
+    /* Section Headings */
+    .main-section h2, .quick-actions h2 {
+      font-size: 1.8rem;
+      color: var(--primary-dark);
+      margin-bottom: 1rem;
+      border-bottom: 3px solid var(--secondary-accent);
+      display: inline-block;
+      padding-bottom: 5px;
+    }
+
+    .module-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.8rem;
+    }
+
+    /* --- NEW CARD STYLING --- */
+    .module-card, .quick-card {
+      background: rgba(255, 255, 255, 0.8); /* Semi-transparent white */
+      backdrop-filter: blur(8px); /* Frosted glass effect */
+      border: 1px solid rgba(255, 255, 255, 0.3); /* Lighter border */
+      border-radius: 16px; /* Slightly more rounded corners */
+      padding: 1.8rem;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1); /* Softer, larger shadow */
+      transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1); /* Smooth transition */
+      display: flex;
+      flex-direction: column;
+      position: relative; /* For pseudo-elements */
+      overflow: hidden; /* For gradient borders */
+    }
+
+    .module-card:before, .quick-card:before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        border-radius: 16px;
+        padding: 2px; /* Controls border thickness */
+        background: linear-gradient(45deg, var(--primary-accent), var(--secondary-accent));
+        -webkit-mask: 
+            linear-gradient(#fff 0 0) content-box, 
+            linear-gradient(#fff 0 0);
+        -webkit-mask-composite: xor;
+        mask-composite: exclude;
+        opacity: 0;
+        transition: opacity 0.4s ease;
+    }
+
+    .module-card:hover:before, .quick-card:hover:before {
+        opacity: 1; /* Show gradient border on hover */
+    }
+
+    .module-card:hover, .quick-card:hover {
+      transform: translateY(-8px) scale(1.02); /* More pronounced lift and slight scale */
+      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.18); /* Stronger shadow on hover */
+      background: rgba(255, 255, 255, 0.95); /* Less transparent on hover */
+    }
+
+    .module-card i, .quick-card i {
+      font-size: 2.2rem; /* Slightly larger icons */
+      margin-bottom: 1rem;
+      color: #fff; /* White icon for better contrast on colored background */
+      background: var(--primary-accent); /* Icon background */
+      width: 55px;
+      height: 55px;
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      transition: background 0.3s ease, transform 0.3s ease;
+    }
+    
+    .quick-card i {
+        background: var(--secondary-accent); /* Yellow background for quick actions */
+        color: var(--primary-dark);
+    }
+
+    .module-card h3, .quick-card h3 {
+      font-size: 1.4rem; /* Slightly larger heading */
+      margin-bottom: 0.6rem;
+      color: var(--primary-dark); /* Ensure headings stand out */
+    }
+
+    .module-card p, .quick-card p {
+        font-size: 0.95rem;
+        color: #444;
+        flex-grow: 1; /* Allow text to push progress bar down */
+    }
+
+    .progress-bar {
+      background: rgba(0, 0, 0, 0.08); /* Lighter background for progress bar */
+      border-radius: 8px; /* More rounded */
+      overflow: hidden;
+      height: 10px; /* Slightly taller */
+      margin-top: 1.5rem; /* More space */
+    }
+
+    .progress {
+      height: 100%;
+      background: linear-gradient(90deg, var(--primary-accent), #6CD2EE); /* Gradient progress */
+      border-radius: 8px;
+      transition: width 0.6s ease-out; /* Smoother progress animation */
+    }
+    
+    .module-card .progress[style*="width: 100%"] { /* Style for completed progress */
+        background: linear-gradient(90deg, #28a745, #5cb85c);
+    }
+
+    .progress-text {
+      margin-top: 0.7rem;
+      font-size: 0.9rem;
+      color: #555;
+      font-weight: 500;
+    }
+
+    /* Footer */
+    footer {
+      text-align: center;
+      background: none; /* No background */
+      color: var(--text-dark);
+      padding: 1rem 0;
+      margin-top: 3rem; /* More space from content */
+      font-size: 0.95rem;
+      border-top: 1px solid #e0e0e0; /* Lighter border */
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 992px) {
+      .sidebar-nav {
+        width: 100%;
+        height: auto;
+        position: relative;
+        padding: 1rem;
+      }
+      .sidebar-nav .nav-links {
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 0.5rem;
+      }
+      .sidebar-nav .nav-links a {
+        padding: 0.5rem 1rem;
+      }
+      .main-content {
+        margin-left: 0;
+        padding: 2rem;
+      }
+      .welcome-banner {
+        flex-direction: column;
+        text-align: center;
+        padding: 2rem;
+      }
+      .welcome-banner .fas {
+        margin-top: 1rem;
+      }
+      .module-grid {
+        grid-template-columns: 1fr; /* Stack cards on very small screens */
+      }
+    }
+    .user-info {
+  margin-top: auto;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(255,255,255,0.15);
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  position: relative;
+  cursor: pointer;
+}
+
+.user-details {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.user-name {
+  font-weight: 500;
+  color: #fff;
+}
+
+/* DROPDOWN FIX */
+.dropdown-menu {
+  position: absolute;
+  bottom: 65px;
+  left: 0;
+  width: 190px;
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 12px 30px rgba(0,0,0,0.25);
+  padding: 0.5rem 0;
+  display: none;
+  flex-direction: column;
+  z-index: 300;
+  animation: fadeUp 0.25s ease;
+}
+
+.dropdown-menu a {
+  color: #053742;
+  padding: 0.7rem 1rem;
+  font-size: 0.95rem;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  transition: 0.25s;
+}
+
+.dropdown-menu a:hover {
+  background: rgba(57,162,219,0.12);
+  color: #39A2DB;
+}
+
+/* Animation */
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+  </style>
+</head>
+<body>
+<aside class="sidebar-nav">
+  <div class="logo">⚖️ LawConnect <span>AI</span></div>
+
+  <nav class="nav-links">
+    <a href="/student/dashboard" class="active">
+      <i class="fas fa-home"></i> Dashboard
+    </a>
+    <a href="#">
+      <i class="fas fa-layer-group"></i> Modules
+    </a>
+    <a href="#">
+      <i class="fas fa-robot"></i> AI Legal Tutor
+    </a>
+    <a href="#">
+      <i class="fas fa-users"></i> Community Forum
+    </a>
+  </nav>
+
+  <!-- USER PROFILE -->
+  <div class="user-info" id="profileMenu">
+    <div class="user-avatar">
+      {{ student.full_name[0] }}
+    </div>
+    <span>{{ student.full_name }}</span>
+
+    <!-- DROPDOWN -->
+    <div class="dropdown-menu" id="dropdownMenu">
+      <a href="#">👤 View Profile</a>
+      <a href="#">✏️ Edit Profile</a>
+      <a href="/logout">🚪 Logout</a>
+    </div>
+  </div>
+</aside>
+
+
+  <div class="main-content">
+    
+    <section class="welcome-banner">
+      <div>
+        <h1>Welcome Back, Alex! 👩‍⚖️</h1>
+        <p>Continue your legal journey — your progress is impressive!</p>
+      </div>
+      <i class="fas fa-scale-balanced"></i>
+    </section>
+<br>
+    <main>
+      <section class="main-section">
+        
+        <h2>📘 Continue Learning</h2>
+        <div class="module-grid">
+          <div class="module-card">
+            <i class="fas fa-gavel"></i>
+            <h3>Criminal Law - Part III</h3>
+            <p>Mens Rea, Strict Liability, and Defenses.</p>
+            <div class="progress-bar"><div class="progress" style="width: 80%;"></div></div>
+            <p class="progress-text">80% complete</p>
+          </div>
+
+          <div class="module-card">
+            <i class="fas fa-handshake"></i>
+            <h3>Contract Law - Basics</h3>
+            <p>Offer, Acceptance, and Consideration.</p>
+            <div class="progress-bar"><div class="progress" style="width: 100%; background:#28a745;"></div></div>
+            <p class="progress-text">Completed ✔</p>
+          </div>
+
+          <div class="module-card">
+            <i class="fas fa-book"></i>
+            <h3>Legal Research Methods</h3>
+            <p>Case citation & interpretation techniques.</p>
+            <div class="progress-bar"><div class="progress" style="width: 40%;"></div></div>
+            <p class="progress-text">40% complete</p>
+          </div>
+          
+          <div class="module-card">
+            <i class="fas fa-landmark"></i>
+            <h3>Constitutional Law</h3>
+            <p>Fundamental rights and judicial review.</p>
+            <div class="progress-bar"><div class="progress" style="width: 10%;"></div></div>
+            <p class="progress-text">10% complete</p>
+          </div>
+        </div>
+      </section>
+      
+      <section class="quick-actions">
+        <h2>🚀 Quick Actions</h2>
+        <div class="module-grid">
+          <div class="quick-card">
+            <i class="fas fa-comments"></i>
+            <h3>Discussion Forum</h3>
+            <p>Engage with peers on practice cases and debates.</p>
+          </div>
+
+          <div class="quick-card">
+            <i class="fas fa-robot"></i>
+            <h3>AI Legal Tutor</h3>
+            <p>Ask doubts, test concepts, and improve your reasoning.</p>
+          </div>
+
+          <div class="quick-card">
+            <i class="fas fa-lightbulb"></i>
+            <h3>Mock Case Trials</h3>
+            <p>Simulate real-world hearings with guided feedback.</p>
+          </div>
+        </div>
+      </section>
+
+      <footer>© 2025 LawConnect AI | Empowering the Future of Legal Learning ⚖️</footer>
+    </main>
+
+  </div>
+
+</body>
+</html>
+<script>
+  const profileMenu = document.getElementById("profileMenu");
+  const dropdownMenu = document.getElementById("dropdownMenu");
+
+  profileMenu.addEventListener("click", () => {
+    dropdownMenu.style.display =
+      dropdownMenu.style.display === "flex" ? "none" : "flex";
+  });
+
+  window.addEventListener("click", (e) => {
+    if (!profileMenu.contains(e.target)) {
+      dropdownMenu.style.display = "none";
+    }
+  });
+</script>

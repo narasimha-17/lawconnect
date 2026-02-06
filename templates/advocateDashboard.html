@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LawConnect AI | Advocate Dashboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet" />
+
+  <style>
+    :root {
+      --primary-dark: #042a2b;
+      --primary-accent: #00a8e8;
+      --secondary-accent: #ffd166;
+      --background-light: #f8fafc;
+      --text-dark: #1e2a32;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    body {
+      display: flex;
+      min-height: 100vh;
+      background: linear-gradient(135deg, #e6f7ff, #ffffff);
+      color: var(--text-dark);
+      overflow-x: hidden;
+    }
+
+    /* Sidebar */
+    .sidebar-nav {
+      width: 280px;
+      background: linear-gradient(180deg, var(--primary-dark), #002230);
+      color: #fff;
+      padding: 2rem 1.5rem;
+      box-shadow: 4px 0 15px rgba(0, 0, 0, 0.2);
+      display: flex;
+      flex-direction: column;
+      position: fixed;
+      height: 100vh;
+      z-index: 100;
+    }
+
+    .logo {
+      font-size: 1.9rem;
+      font-weight: 700;
+      margin-bottom: 3rem;
+    }
+    .logo span {
+      color: var(--secondary-accent);
+    }
+
+    .nav-links {
+      display: flex;
+      flex-direction: column;
+      gap: 1.3rem;
+      flex-grow: 1;
+    }
+
+    .nav-links a {
+      color: #fff;
+      text-decoration: none;
+      font-size: 1.1rem;
+      padding: 0.8rem 1rem;
+      border-radius: 8px;
+      transition: 0.3s;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .nav-links a:hover,
+    .nav-links a.active {
+      background: rgba(0, 168, 232, 0.2);
+      color: var(--secondary-accent);
+    }
+
+    .user-info {
+      margin-top: auto;
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.2);
+      padding-top: 1rem;
+      position: relative;
+      cursor: pointer;
+    }
+
+    .user-avatar {
+      width: 45px;
+      height: 45px;
+      border-radius: 50%;
+      background: var(--secondary-accent);
+      color: var(--primary-dark);
+      font-weight: bold;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    /* Dropdown Menu */
+    .dropdown-menu {
+      position: absolute;
+      bottom: 60px;
+      left: 0;
+      background: #fff;
+      color: var(--primary-dark);
+      border-radius: 10px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+      padding: 0.8rem 0;
+      width: 200px;
+      display: none;
+      flex-direction: column;
+      z-index: 200;
+    }
+
+    .dropdown-menu a {
+      text-decoration: none;
+      color: var(--primary-dark);
+      padding: 0.8rem 1rem;
+      display: block;
+      font-size: 0.95rem;
+      transition: 0.3s;
+    }
+
+    .dropdown-menu a:hover {
+      background: rgba(0, 168, 232, 0.1);
+      color: var(--primary-accent);
+    }
+
+    /* Main Content */
+    .main-content {
+      margin-left: 280px;
+      flex-grow: 1;
+      padding: 3rem 4rem;
+    }
+
+    .welcome-banner {
+      background: linear-gradient(90deg, var(--primary-accent), #028090);
+      color: #fff;
+      border-radius: 20px;
+      padding: 3rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+    }
+
+    .welcome-banner h1 {
+      font-size: 2.2rem;
+      font-weight: 700;
+    }
+
+    .welcome-banner p {
+      font-size: 1.1rem;
+      margin-top: 0.4rem;
+      opacity: 0.9;
+    }
+
+    .welcome-banner i {
+      font-size: 4rem;
+      color: var(--secondary-accent);
+    }
+
+    h2 {
+      font-size: 1.8rem;
+      color: var(--primary-dark);
+      border-bottom: 3px solid var(--secondary-accent);
+      display: inline-block;
+      padding-bottom: 5px;
+      margin: 2rem 0 1rem;
+    }
+
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 2rem;
+    }
+
+    .card {
+      background: rgba(255, 255, 255, 0.8);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      border-radius: 16px;
+      backdrop-filter: blur(6px);
+      padding: 1.8rem;
+      transition: all 0.3s ease;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+      background: rgba(255, 255, 255, 0.95);
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+    }
+
+    .card i {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+      background: var(--primary-accent);
+      color: #fff;
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .card h3 {
+      color: var(--primary-dark);
+      font-size: 1.3rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .card p {
+      font-size: 0.95rem;
+      color: #444;
+    }
+
+    footer {
+      text-align: center;
+      padding: 1rem;
+      margin-top: 2rem;
+      color: var(--text-dark);
+      border-top: 1px solid #e0e0e0;
+    }
+
+    @media (max-width: 992px) {
+      .sidebar-nav {
+        position: relative;
+        width: 100%;
+        height: auto;
+      }
+      .main-content {
+        margin-left: 0;
+        padding: 2rem;
+      }
+      .welcome-banner {
+        flex-direction: column;
+        text-align: center;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Sidebar -->
+  <aside class="sidebar-nav">
+    <div class="logo">⚖️ LawConnect <span>AI</span></div>
+    <nav class="nav-links">
+      <a href="#" class="active"><i class="fas fa-home"></i> Dashboard</a>
+      <a href="#"><i class="fas fa-briefcase"></i> My Cases</a>
+      <a href="#"><i class="fas fa-users"></i> Clients</a>
+      <a href="#"><i class="fas fa-robot"></i> AI Legal Assistant</a>
+      <a href="#"><i class="fas fa-book-open"></i> Legal Resources</a>
+    </nav>
+
+    <div class="user-info" id="profileMenu">
+      <div class="user-avatar">
+  {{ advocate.name[0] }}
+</div>
+<span>{{ advocate.name }}</span>
+
+
+      <!-- Dropdown -->
+      <div class="dropdown-menu" id="dropdownMenu">
+        <a href="#">👤 View Profile</a>
+        <a href="#">✏️ Edit Profile</a>
+        <a href="/">🚪 Logout</a>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Main -->
+  <div class="main-content">
+    <section class="welcome-banner">
+      <div>
+        <h1>Welcome, Advocate Ravi Kumar ⚖️</h1>
+        <p>Track your cases, manage clients, and get AI-powered insights.</p>
+      </div>
+      <i class="fas fa-balance-scale"></i>
+    </section>
+
+    <main>
+      <section>
+        <h2>📂 Active Cases</h2>
+        <div class="card-grid">
+          <div class="card">
+            <i class="fas fa-gavel"></i>
+            <h3>State vs Mehta</h3>
+            <p>Next Hearing: Nov 12, 2025<br />Status: Evidence Stage</p>
+          </div>
+
+          <div class="card">
+            <i class="fas fa-scale-balanced"></i>
+            <h3>Patel Family Property Dispute</h3>
+            <p>Next Hearing: Dec 1, 2025<br />Status: Mediation Scheduled</p>
+          </div>
+
+          <div class="card">
+            <i class="fas fa-file-contract"></i>
+            <h3>ABC Corp vs DEF Ltd</h3>
+            <p>Next Hearing: Nov 20, 2025<br />Status: Arguments Pending</p>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <h2>👥 Client Management</h2>
+        <div class="card-grid">
+          <div class="card">
+            <i class="fas fa-user-tie"></i>
+            <h3>New Client Registration</h3>
+            <p>Add and verify new clients seeking legal representation.</p>
+          </div>
+          <div class="card">
+            <i class="fas fa-envelope"></i>
+            <h3>Client Communication</h3>
+            <p>Manage secure client chats and hearing updates.</p>
+          </div>
+          <div class="card">
+            <i class="fas fa-clipboard-check"></i>
+            <h3>Appointment Scheduling</h3>
+            <p>Set up and manage consultations efficiently.</p>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <h2>🤖 AI Tools & Resources</h2>
+        <div class="card-grid">
+          <div class="card">
+            <i class="fas fa-robot"></i>
+            <h3>AI Case Summary Generator</h3>
+            <p>Upload case files to get quick AI-generated legal summaries.</p>
+          </div>
+          <div class="card">
+            <i class="fas fa-lightbulb"></i>
+            <h3>Legal Research Assistant</h3>
+            <p>Get references, citations, and precedents instantly.</p>
+          </div>
+          <div class="card">
+            <i class="fas fa-chart-line"></i>
+            <h3>Case Success Analytics</h3>
+            <p>Analyze your win rate and performance across case categories.</p>
+          </div>
+        </div>
+      </section>
+
+      <footer>© 2025 LawConnect AI | Empowering Legal Intelligence for Advocates</footer>
+    </main>
+  </div>
+
+  <script>
+    const profileMenu = document.getElementById('profileMenu');
+    const dropdownMenu = document.getElementById('dropdownMenu');
+
+    profileMenu.addEventListener('click', () => {
+      dropdownMenu.style.display =
+        dropdownMenu.style.display === 'flex' ? 'none' : 'flex';
+    });
+
+    // Hide dropdown when clicking outside
+    window.addEventListener('click', (e) => {
+      if (!profileMenu.contains(e.target)) {
+        dropdownMenu.style.display = 'none';
+      }
+    });
+  </script>
+</body>
+</html>

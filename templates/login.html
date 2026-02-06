@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LawConnect AI | Login</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        /* --- Color Variables: Deep Emerald and Gold --- */
+        :root {
+            --primary-dark: #073B4C;        /* Deep Emerald/Teal */
+            --primary-accent: #118AB2;      /* Vibrant Blue-Green */
+            --secondary-accent: #FFD166;    /* Subtle Gold/Marigold */
+            --text-light: #F7F9FB;          /* Very Light Off-White */
+        }
+
+        /* --- Base & Body Styling --- */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, var(--primary-dark), var(--primary-accent));
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden; /* Prevent scrollbar due to the bounce animation */
+        }
+
+        /* --- Dynamic: Login Container Load Animation --- */
+        @keyframes fadeInScale {
+            from { opacity: 0; transform: scale(0.9) translateY(20px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+
+        /* --- Login Box --- */
+        .login-container {
+            /* Glassmorphism effect */
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2); /* Subtle border for definition */
+            padding: 40px 50px;
+            border-radius: 20px;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3); /* Enhanced shadow */
+            width: 380px; /* Slightly wider for better desktop appeal */
+            max-width: 90%; /* Responsive max-width */
+            text-align: center;
+            color: var(--text-light);
+            
+            /* Apply animation on load */
+            animation: fadeInScale 0.7s ease-out forwards;
+        }
+
+        .login-container h2 {
+            font-size: 28px;
+            margin-bottom: 30px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            color: var(--secondary-accent);
+            text-shadow: 0 0 5px rgba(0, 0, 0, 0.5); /* Subtle text shadow */
+        }
+
+        /* --- Input fields & Dropdown --- */
+        .login-container input,
+        .login-container select {
+            width: 100%;
+            padding: 15px 18px; /* Increased padding */
+            margin: 12px 0;
+            border: none;
+            outline: none;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.1); /* Lighter background */
+            color: var(--text-light);
+            font-size: 16px;
+            transition: all 0.3s ease;
+            box-sizing: border-box;
+            border: 1px solid transparent; /* Prepare for border change on focus */
+        }
+
+        .login-container input::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        /* Dynamic: Input Focus Effect */
+        .login-container input:focus,
+        .login-container select:focus {
+            background: rgba(255, 255, 255, 0.2);
+            box-shadow: 0 0 15px var(--secondary-accent);
+            border: 1px solid var(--secondary-accent);
+        }
+        
+        /* Dropdown specific styles */
+        .login-container select {
+             margin-top: 12px;
+        }
+
+        option {
+            background-color: var(--primary-dark); 
+            color: var(--text-light);
+        }
+        
+        /* --- Buttons (Gold Accent) --- */
+        .btn {
+            background: var(--secondary-accent);
+            color: var(--primary-dark);
+            border: none;
+            padding: 15px 20px;
+            width: 100%;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 18px;
+            font-weight: 700;
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); /* Smoother transition */
+            margin-top: 25px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Dynamic: Button Hover Effect */
+        .btn:hover {
+            background: #FFECB3; 
+            transform: translateY(-3px); /* Lift button on hover */
+            box-shadow: 0 8px 12px rgba(0, 0, 0, 0.3); /* Stronger shadow when lifted */
+        }
+
+        /* --- Links --- */
+        .links {
+            margin-top: 20px;
+            font-size: 15px;
+        }
+
+        .links p {
+            margin: 8px 0; /* Spacing between links */
+        }
+
+        .links a {
+            color: var(--secondary-accent);
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s;
+        }
+
+        /* Dynamic: Link Hover Effect */
+        .links a:hover {
+            color: #FFECB3;
+            text-decoration: underline;
+        }
+
+        /* --- Responsive Design (Media Queries) --- */
+        @media (max-width: 500px) {
+            .login-container {
+                padding: 30px 30px; /* Reduced padding on small screens */
+            }
+
+            .login-container h2 {
+                font-size: 24px; /* Smaller title */
+                margin-bottom: 20px;
+            }
+
+            .login-container input,
+            .login-container select {
+                padding: 12px 15px; /* Smaller input padding */
+                font-size: 14px;
+            }
+
+            .btn {
+                padding: 12px 20px;
+                font-size: 16px;
+                margin-top: 20px;
+            }
+
+            .links {
+                font-size: 13px; /* Smaller link text */
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <h2>⚖️ LawConnect AI Login</h2>
+        <form action="/login" method="POST">
+            <input type="text" name="email" placeholder="Enter Email" required>
+            <input type="password" name="password" placeholder="Enter Password" required>
+
+            <select name="role" required>
+                <option value="" disabled selected>Select Role</option>
+                <option value="student">Student</option>
+                <option value="advocate">Advocate</option>
+                <option value="citizen">Citizen</option>
+            </select>
+
+            <button type="submit" class="btn">Login</button>
+
+            <div class="links">
+                <p>Don't have an account? <a href="/register">Register</a></p>
+                <p><a href="/forgot-password">Forgot Password?</a></p>
+            </div>
+        </form>
+    </div>
+</body>
+</html>

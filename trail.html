@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LawConnect AI Tutor</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+  <style>
+    :root {
+      --primary-dark: #053742;
+      --primary-accent: #39A2DB;
+      --secondary-accent: #FFD166;
+      --background-light: #F8FAFC;
+      --text-dark: #1E2A32;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    body {
+      /* Background gradient using the primary colors for depth */
+      background: linear-gradient(135deg, var(--primary-dark), #0C6E8F);
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    /* Header / Navbar */
+    header {
+      background: rgba(5, 55, 66, 0.95); /* Darker, semi-transparent background */
+      padding: 1rem 4rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    header h1 {
+      font-size: 1.8rem;
+      font-weight: 700;
+    }
+    
+    header h1 span {
+        color: var(--secondary-accent);
+    }
+
+    .nav-buttons {
+      display: flex;
+      gap: 15px;
+    }
+
+    .nav-buttons button {
+      background: transparent;
+      border: 2px solid var(--secondary-accent);
+      color: var(--secondary-accent);
+      padding: 8px 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: 0.3s;
+      font-weight: 500;
+    }
+
+    .nav-buttons button:hover {
+      background: var(--secondary-accent);
+      color: var(--primary-dark);
+      transform: translateY(-2px);
+    }
+
+    /* Main Container - Centered and Spaced */
+    .container {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start; /* Align content to the top */
+      padding: 30px;
+    }
+    
+    /* Main Chat Section - Wide, Single View */
+    .main {
+      width: 100%;
+      max-width: 1000px; /* Max width for readability */
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(8px);
+      border-radius: 20px;
+      padding: 30px;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+      height: calc(100vh - 160px); /* Calculate height to fill remaining space */
+    }
+
+    /* Tabbed/Segmented Control (Replaces Sidebar) */
+    #mode-tabs {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 25px;
+        background: rgba(0, 0, 0, 0.1);
+        border-radius: 12px;
+        padding: 8px;
+    }
+    
+    #mode-tabs button {
+        flex: 1;
+        background: transparent;
+        border: none;
+        color: #fff;
+        padding: 12px 10px;
+        border-radius: 10px;
+        cursor: pointer;
+        font-weight: 600;
+        transition: 0.3s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+    }
+    
+    #mode-tabs button.active {
+        background: var(--primary-accent);
+        box-shadow: 0 4px 15px rgba(57, 162, 219, 0.5);
+        transform: translateY(-1px);
+    }
+
+    #mode-tabs button:hover:not(.active) {
+        background: rgba(255, 255, 255, 0.1);
+    }
+
+    /* Chat Box */
+    #chat-box {
+      flex: 1;
+      overflow-y: auto;
+      padding: 20px;
+      border-radius: 15px;
+      background: rgba(0, 0, 0, 0.2);
+      margin-bottom: 15px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .msg {
+      margin: 10px 0;
+      padding: 12px 18px;
+      border-radius: 20px;
+      max-width: 75%;
+      word-wrap: break-word;
+      line-height: 1.5;
+      font-size: 1rem;
+    }
+
+    .user {
+      /* Vibrant gradient for user messages */
+      background: linear-gradient(135deg, var(--primary-accent), #2C98A0); 
+      align-self: flex-end;
+      color: white;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+      border-bottom-right-radius: 5px; /* Tail effect */
+    }
+
+    .bot {
+      /* Subtle background for bot messages */
+      background: rgba(255,255,255,0.15); 
+      align-self: flex-start;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+      color: #E6F7FF;
+      border-bottom-left-radius: 5px; /* Tail effect */
+    }
+
+    /* Input Area */
+    #input-area {
+      display: flex;
+      gap: 15px;
+    }
+
+    #user-input {
+      flex: 1;
+      padding: 15px 20px;
+      border-radius: 12px;
+      border: none;
+      outline: none;
+      font-size: 1.05rem;
+      color: var(--text-dark);
+      background: #fff;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+
+    #send-btn {
+      /* Yellow accent for primary action */
+      background: var(--secondary-accent);
+      border: none;
+      color: var(--primary-dark);
+      padding: 10px 25px;
+      border-radius: 12px;
+      cursor: pointer;
+      font-weight: 700;
+      font-size: 1.05rem;
+      transition: 0.3s;
+    }
+
+    #send-btn:hover {
+      background: #FFE090;
+      transform: scale(1.02);
+    }
+    
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+        header {
+            padding: 1rem 20px;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .container {
+            padding: 15px;
+        }
+        .main {
+            height: calc(100vh - 190px);
+            padding: 20px;
+        }
+        #mode-tabs {
+            flex-wrap: wrap;
+            gap: 5px;
+        }
+        #mode-tabs button {
+            flex-basis: calc(50% - 5px);
+            font-size: 0.9rem;
+            padding: 10px 8px;
+        }
+        #input-area {
+            flex-direction: column;
+        }
+        #send-btn {
+            padding: 15px;
+        }
+        .nav-buttons {
+            width: 100%;
+            justify-content: space-around;
+        }
+    }
+
+  </style>
+</head>
+<body>
+  <header>
+    <h1>⚖️ LawConnect <span>AI</span> Tutor</h1>
+    <div class="nav-buttons">
+      <button onclick="window.location.href='/'">Home</button>
+      <button onclick="window.location.href='/community'">Community</button>
+      <button onclick="window.location.href='/logout'">Logout</button>
+    </div>
+  </header>
+
+  <div class="container">
+    
+    <div class="main" id="main-content">
+        <div id="mode-tabs">
+            <button class="active" id="chat-mode-btn" onclick="switchMode('chat')"><i class="fas fa-brain"></i> AI Chat</button>
+            <button id="mcq-mode-btn" onclick="switchMode('mcq')"><i class="fas fa-book-reader"></i> Law MCQs</button>
+            <button id="debate-mode-btn" onclick="switchMode('debate')"><i class="fas fa-balance-scale-right"></i> AI Debate</button>
+        </div>
+
+        <div id="chat-box">
+          <p class="bot" style="align-self: flex-start; opacity: 0.8; font-style: italic;">
+              👋 Welcome to LawConnect AI Tutor! You are currently in **AI Chat** mode. Ask me any question about law to begin.
+          </p>
+        </div>
+        
+        <div id="input-area">
+          <input type="text" id="user-input" placeholder="Ask me about law or type your query..." />
+          <button id="send-btn" onclick="sendMessage()"><i class="fas fa-paper-plane"></i> Send</button>
+        </div>
+    </div>
+  </div>
+
+  <script>
+    let mode = 'chat';
+
+    function switchMode(newMode) {
+      mode = newMode;
+      const chatBox = document.getElementById('chat-box');
+      
+      // Update active button styles
+      document.querySelectorAll('#mode-tabs button').forEach(btn => btn.classList.remove('active'));
+      document.getElementById(`${newMode}-mode-btn`).classList.add('active');
+      
+      chatBox.innerHTML = `
+        <p style="opacity: 0.8; font-style: bold;">
+            Mode switched to <b>${newMode.toUpperCase().replace('-', ' ')}</b>. Start your session below 👇
+        </p>
+      `;
+      chatBox.scrollTop = chatBox.scrollHeight;
+    }
+    
+    // Set initial active mode on load
+    document.getElementById('chat-mode-btn').classList.add('active');
+
+    function sendMessage() {
+      const input = document.getElementById("user-input");
+      const chatBox = document.getElementById("chat-box");
+
+      if (input.value.trim() === "") return;
+
+      const userMsg = document.createElement("div");
+      userMsg.classList.add("msg", "user");
+      userMsg.textContent = input.value;
+      chatBox.appendChild(userMsg);
+
+      const botMsg = document.createElement("div");
+      botMsg.classList.add("msg", "bot");
+      botMsg.textContent = "Thinking...";
+      chatBox.appendChild(botMsg);
+
+      // Dummy response simulation
+      setTimeout(() => {
+        botMsg.textContent = getAIResponse(input.value);
+        chatBox.scrollTop = chatBox.scrollHeight;
+      }, 600);
+
+      input.value = "";
+      chatBox.scrollTop = chatBox.scrollHeight;
+    }
+
+    function getAIResponse(query) {
+      if (mode === "chat") {
+        return `🤖 Legal Insight: The concept of "${query}" relates to constitutional interpretation and justice principles. Would you like a landmark case example?`;
+      } else if (mode === "case") {
+        return `📜 Case Study Generated:\nCase Title: ${query} vs. State of India\nFacts: A simulated case scenario for your analysis, focusing on the principle of ${query}.`;
+      } else if (mode === "mcq") {
+        return `📚 Law MCQ:\nQ: Which Article ensures the Right to Equality?\nA) 12\nB) 14 (Correct)\nC) 19\nD) 21`;
+      } else if (mode === "debate") {
+        return `⚔️ Debate Mode:\nYou argued: "${query}".\nAI’s Counter: Here's the opposing legal perspective, citing a conflict with established precedent. Your move.`;
+      }
+      return "I'm not sure how to respond in this mode.";
+    }
+  </script>
+</body>
+</html>

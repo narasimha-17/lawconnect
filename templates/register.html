@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LawConnect AI | Register</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        /* --- Color Variables: Deep Emerald and Gold --- */
+        :root {
+            --primary-dark: #073B4C;        /* Deep Emerald/Teal */
+            --primary-accent: #118AB2;      /* Vibrant Blue-Green */
+            --secondary-accent: #FFD166;    /* Subtle Gold/Marigold */
+            --text-light: #F7F9FB;          /* Very Light Off-White */
+        }
+
+        /* --- Base & Body Styling --- */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, var(--primary-dark), var(--primary-accent));
+            height: 95vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        /* --- Dynamic: Container Load Animation --- */
+        @keyframes fadeInScale {
+            from { opacity: 0; transform: scale(0.9) translateY(20px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+
+        /* --- Registration Box (Wider and Shorter) --- */
+        .register-container {
+            /* Glassmorphism effect */
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            
+            /* DECREASED Vertical Padding, Increased Horizontal Padding */
+            padding: 40px 80px; 
+            
+            border-radius: 25px;
+            box-shadow: 0 10px 40px 0 rgba(0, 0, 0, 0.4); 
+            
+            /* INCREASED Width significantly */
+            width: 700px; 
+            max-width: 90%; 
+            
+            text-align: center;
+            color: var(--text-light);
+            
+            /* Apply animation on load */
+            animation: fadeInScale 0.7s ease-out forwards;
+        }
+
+        .register-container h2 {
+            font-size: 36px; 
+            margin-bottom: 1px; /* Reduced margin slightly */
+            font-weight: 700;
+            letter-spacing: 1px;
+            color: var(--secondary-accent);
+            text-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+        }
+
+        /* --- Input fields & Dropdown --- */
+        .register-container input,
+        .register-container select {
+            width: 100%;
+            padding: 16px 22px; /* Slightly reduced input padding */
+            margin: 10px 0; /* Reduced margin */
+            border: none;
+            outline: none;
+            border-radius: 15px; 
+            background: rgba(255, 255, 255, 0.1); 
+            color: var(--text-light);
+            font-size: 18px; 
+            transition: all 0.3s ease;
+            box-sizing: border-box;
+            border: 1px solid transparent; 
+        }
+
+        .register-container input::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        /* Dynamic: Input Focus Effect */
+        .register-container input:focus,
+        .register-container select:focus {
+            background: rgba(255, 255, 255, 0.2);
+            box-shadow: 0 0 18px var(--secondary-accent); 
+            border: 1px solid var(--secondary-accent);
+        }
+        
+        option {
+            background-color: var(--primary-dark); 
+            color: var(--text-light);
+        }
+        
+        /* --- Buttons (Gold Accent) --- */
+        .btn {
+            background: var(--secondary-accent);
+            color: var(--primary-dark);
+            border: none;
+            padding: 18px 25px; 
+            width: 100%;
+            border-radius: 15px;
+            cursor: pointer;
+            font-size: 20px; 
+            font-weight: 700;
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); 
+            margin-top: 30px; /* Reduced margin */
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Dynamic: Button Hover Effect */
+        .btn:hover {
+            background: #FFECB3; 
+            transform: translateY(-4px); 
+            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.4);
+        }
+
+        /* --- Links --- */
+        .links {
+            margin-top: 25px; /* Reduced margin */
+            font-size: 16px; 
+        }
+
+        .links p {
+            margin: 10px 0;
+        }
+
+        .links a {
+            color: var(--secondary-accent);
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s;
+        }
+
+        /* Dynamic: Link Hover Effect */
+        .links a:hover {
+            color: #FFECB3;
+            text-decoration: underline;
+        }
+
+        /* --- Responsive Design (Media Queries) --- */
+        @media (max-width: 768px) {
+             /* Make it a standard vertical box on tablets */
+            .register-container {
+                padding: 40px 40px; 
+                width: 100%;
+                max-width: 90%;
+            }
+
+            .register-container h2 {
+                font-size: 30px; 
+                margin-bottom: 30px;
+            }
+
+            .register-container input,
+            .register-container select {
+                padding: 14px 18px; 
+                font-size: 16px;
+                margin: 10px 0;
+            }
+
+            .btn {
+                padding: 14px 20px;
+                font-size: 18px;
+                margin-top: 25px;
+            }
+
+            .links {
+                font-size: 14px;
+                margin-top: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="register-container">
+        <h2>📝 LawConnect AI Registration</h2>
+        <form action="/register" method="POST">
+            <input type="text" name="name" placeholder="Full Name" required>
+            <input type="email" name="email" placeholder="Enter Email" required>
+            <input type="password" name="password" placeholder="Create Password" required>
+            <input type="password" name="confirm_password" placeholder="Confirm Password" required>
+
+            <select name="role" required>
+                <option value="" disabled selected>Select Your Role</option>
+                <option value="student">Law Student</option>
+                <option value="lawyer">Advocate</option>
+                <option value="commoner">Commoner (Citizen)</option>
+            </select>
+
+            <button type="submit" class="btn">Register Account</button>
+
+            <div class="links">
+                <p>Already have an account? <a href="/login">Login Here</a></p>
+            </div>
+        </form>
+    </div>
+</body>
+</html>

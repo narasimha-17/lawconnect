@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LawConnect AI | Legal Intelligence for Everyone</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        /* New Color Palette: Deep Emerald Green & Subtle Gold */
+        :root {
+            --primary-dark: #073B4C;        /* Deep Emerald/Teal for Navbar/Footer */
+            --primary-accent: #118AB2;      /* Vibrant Blue-Green for Hero Gradient */
+            --secondary-accent: #FFD166;    /* Subtle Gold/Marigold for Highlights */
+            --background-light: #F7F9FB;    /* Very Light Off-White */
+            --text-dark: #2A363B;           /* Dark Charcoal for Body Text */
+            --card-shadow: rgba(0, 0, 0, 0.08);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            /* Soft gradient background for the whole page */
+            background: linear-gradient(135deg, var(--background-light), #E9ECEF);
+            color: var(--text-dark);
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        /* --- Navbar --- */
+        .navbar {
+            background: var(--primary-dark); /* Deep Emerald */
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 3rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            font-size: 1.6rem;
+            font-weight: 800;
+        }
+
+        .logo span {
+            color: var(--secondary-accent); 
+            
+        }
+
+        .nav-links {
+            list-style: none;
+            display: flex;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: var(--secondary-accent); /* Gold hover effect */
+        }
+        
+        /* Added specific login link to maintain structure, will be styled as a button */
+        .nav-links .login-link a {
+            background: var(--secondary-accent);
+            color: var(--primary-dark);
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            font-weight: 600;
+            transition: background 0.3s;
+        }
+        .nav-links .login-link a:hover {
+            background: #FFECB3;
+            color: var(--primary-dark);
+        }
+
+        /* --- Hero Section --- */
+        .hero {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 5rem 6rem;
+            flex-wrap: wrap;
+            background: linear-gradient(135deg, var(--primary-dark), var(--primary-accent));
+            color: white;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+            border-bottom-left-radius: 30px; 
+            border-bottom-right-radius: 30px;
+        }
+
+        .hero-content {
+            max-width: 550px;
+        }
+
+        .hero-content h1 {
+            font-size: 2.8rem;
+            line-height: 1.2;
+            font-weight: 700;
+        }
+
+        .hero-content span {
+            color: var(--secondary-accent); /* Highlight using Gold */
+            font-weight: 800;
+        }
+
+        .hero-content p {
+            margin-top: 1.2rem;
+            font-size: 1.15rem;
+            opacity: 0.95;
+        }
+
+        .hero-buttons {
+            margin-top: 2.5rem;
+            display: flex;
+            gap: 15px; /* Added gap for multiple buttons */
+            flex-wrap: wrap;
+        }
+
+        .btn-primary, .btn-secondary, .btn-tertiary { /* Added .btn-tertiary */
+            padding: 0.8rem 1.5rem; /* Slightly reduced padding for 3 buttons */
+            text-decoration: none;
+            border-radius: 50px; 
+            font-weight: 600;
+            transition: 0.3s;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            min-width: 150px;
+            text-align: center;
+        }
+
+        .btn-primary { /* Student Login */
+            background: var(--secondary-accent); 
+            color: var(--primary-dark);
+        }
+        
+        .btn-secondary { /* Advocate Login */
+            background: #fff;
+            color: var(--primary-dark);
+            border: 2px solid #fff;
+        }
+        
+        .btn-tertiary { /* Commoner Login */
+            border: 2px solid white;
+            color: white;
+            background: transparent;
+        }
+
+        .btn-primary:hover, .btn-secondary:hover, .btn-tertiary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(0,0,0,0.2);
+        }
+        .btn-primary:hover { background: #FFECB3; }
+        .btn-secondary:hover { background: #E9ECEF; border-color: #E9ECEF; }
+        .btn-tertiary:hover { background: rgba(255,255,255,0.15); } /* Subtle hover for tertiary */
+
+
+        /* Hero Image */
+        .hero-image img {
+            width: 320px;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        /* --- Features --- */
+        .features {
+            padding: 5rem 6rem 4rem;
+            text-align: center;
+        }
+
+        .features h2 {
+            font-size: 2.2rem;
+            margin-bottom: 3rem;
+            color: var(--primary-dark);
+            font-weight: 700;
+        }
+
+        .feature-grid {
+            /* Changed to 3 columns to fit the 6 new features cleanly */
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); 
+            gap: 2rem;
+        }
+
+        .feature-card {
+            background: white;
+            padding: 2.5rem;
+            border-radius: 15px;
+            box-shadow: 0 6px 20px var(--card-shadow);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border-top: 5px solid var(--primary-accent); 
+            height: 100%; /* Ensures cards in the grid are uniform height */
+        }
+
+        .feature-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 30px rgba(0,0,0,0.15);
+        }
+
+        .feature-card .fas { /* Styling the font-awesome icons */
+            font-size: 40px;
+            color: var(--primary-accent);
+            margin-bottom: 1rem;
+        }
+        
+        .feature-card img {
+            display: none; /* Hide old img tags if using Font Awesome */
+        }
+
+        .feature-card h3 {
+            margin-bottom: 0.75rem;
+            color: var(--primary-dark);
+            font-weight: 600;
+            font-size: 1.3rem;
+        }
+
+        .feature-card p {
+            font-size: 1rem;
+            color: #555;
+        }
+
+        /* --- Footer --- */
+        footer {
+            background: var(--primary-dark);
+            color: white;
+            text-align: center;
+            padding: 1.5rem 0;
+            margin-top: 4rem;
+        }
+
+        /* --- Responsive --- */
+        @media (max-width: 992px) {
+             .hero {
+                padding: 4rem 3rem;
+            }
+             .hero-content h1 {
+                font-size: 2.5rem;
+            }
+            .features {
+                padding: 4rem 3rem;
+            }
+            .feature-grid {
+                grid-template-columns: repeat(2, 1fr); /* 2 columns on tablets */
+            }
+        }
+
+        @media (max-width: 768px) {
+            .navbar {
+                flex-direction: column;
+                padding: 1rem;
+            }
+            .nav-links {
+                margin-top: 10px;
+                gap: 1rem;
+            }
+            .hero {
+                flex-direction: column;
+                text-align: center;
+                padding: 3rem 1.5rem;
+                border-radius: 0;
+            }
+            .hero-content h1 {
+                font-size: 2rem;
+            }
+            .hero-image img {
+                width: 250px;
+                margin-top: 2rem;
+            }
+            .hero-buttons {
+                flex-direction: column;
+                gap: 15px;
+            }
+            .btn-primary, .btn-secondary, .btn-tertiary {
+                min-width: unset;
+            }
+            .features {
+                padding: 3rem 1.5rem;
+            }
+            .feature-grid {
+                grid-template-columns: 1fr; /* 1 column on mobile */
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="logo">⚖️ LawConnect <span>AI</span></div>
+        <ul class="nav-links">
+            <li><a href="#">Home</a></li>
+            <li><a href="#">Practice</a></li>
+            <li><a href="#">Community</a></li>
+            <li><a href="/contact">Contact</a></li>
+            <li class="login-link"><a href="#">Login</a></li>
+        </ul>
+    </nav>
+
+    <section class="hero">
+        <div class="hero-content">
+            <h1>Empowering Legal Intelligence for Everyone</h1>
+            <p>Practice law, learn from experts, connect with clients — all in one AI-powered platform designed for legal mastery and accessibility.</p>
+            <div class="hero-buttons">
+                <a href="/login" class="btn-primary">Login as Student</a>
+                <a href="/login" class="btn-secondary">Login as Advocate</a>
+                <a href="/login" class="btn-tertiary">Login as Citizen</a>
+            </div>
+        </div>
+        <div class="hero-image">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/0/00/Justice_scale_silhouette%2C_medium.svg" alt="Law Illustration">
+    </section>
+
+    <section class="features">
+        <h2>What You Can Do on LawConnect AI</h2>
+        <div class="feature-grid">
+            
+            <div class="feature-card">
+                <i class="fas fa-book-reader"></i>
+                <h3>Smart Legal Learning</h3>
+                <p>Interactive quizzes, AI tutors, and case-based practice modules for **law students** to master complex legal concepts effortlessly.</p>
+            </div>
+
+            <div class="feature-card">
+                <i class="fas fa-user-tie"></i>
+                <h3>Advocate Workspace</h3>
+                <p>AI-powered document drafting, intelligent research assistance, and advanced **case summary generation** for efficient professional practice.</p>
+            </div>
+
+            <div class="feature-card">
+                <i class="fas fa-hands-helping"></i>
+                <h3>Legal Help for All</h3>
+                <p>Access intuitive **chatbot assistance** and clear guidance on common legal issues, contracts, property rights, and navigating the legal system.</p>
+            </div>
+
+            <div class="feature-card">
+                <i class="fas fa-microchip"></i>
+                <h3>Generative Case Modeling</h3>
+                <p>Use AI to **generate custom case studies** based on your parameters, enhancing strategic thinking and predictive analysis skills.</p>
+            </div>
+
+            <div class="feature-card">
+                <i class="fas fa-comments"></i>
+                <h3>Community Collaboration</h3>
+                <p>Engage in our secure law forum, share insights, and access a rich repository of resources and **best legal practices** peer-to-peer.</p>
+            </div>
+            
+            <div class="feature-card">
+                <i class="fas fa-chart-line"></i>
+                <h3>Precedent Analytics</h3>
+                <p>Analyze thousands of relevant court decisions to **predict potential case outcomes** and identify effective legal strategies in seconds.</p>
+            </div>
+
+        </div>
+    </section>
+
+    <footer>
+        <p>© 2025 LawConnect AI | Designed for legal mastery</p>
+    </footer>
+
+</body>
+</html>
