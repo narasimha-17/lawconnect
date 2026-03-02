@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LawConnect AI | Dashboard</title>
+  <style>
+    :root {
+      --primary: #1e293b; /* Deep Navy */
+      --accent: #2563eb;  /* Professional Blue */
+      --bg: #f8fafc;
+      --text: #334155;
+      --white: #ffffff;
+    }
+
+    body { 
+      font-family: 'Inter', -apple-system, sans-serif; 
+      background-color: var(--bg); 
+      color: var(--text);
+      margin: 0;
+      display: flex;
+    }
+
+    /* Sidebar Navigation */
+    nav {
+      width: 240px;
+      background: var(--primary);
+      height: 100vh;
+      color: white;
+      padding: 20px;
+      position: fixed;
+    }
+
+    /* Main Content Area */
+    main {
+      margin-left: 280px;
+      padding: 40px;
+      width: 100%;
+    }
+
+    .header-flex {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 30px;
+    }
+
+    .btn-add {
+      background: var(--accent);
+      color: white;
+      padding: 10px 20px;
+      border-radius: 6px;
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    /* Grid Layout for Client Cards */
+    .client-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 20px;
+    }
+
+    .client-card {
+      background: var(--white);
+      padding: 24px;
+      border-radius: 12px;
+      border: 1px solid #e2e8f0;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .client-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    }
+
+    .client-name {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--primary);
+      margin: 0 0 8px 0;
+    }
+
+    .case-badge {
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      background: #e0f2fe;
+      color: #0369a1;
+      margin-bottom: 15px;
+    }
+
+    .contact-info {
+      font-size: 0.9rem;
+      color: #64748b;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    hr { border: 0; border-top: 1px solid #f1f5f9; margin: 15px 0; }
+
+    .actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 15px;
+    }
+
+    .btn-outline {
+      font-size: 0.85rem;
+      color: var(--accent);
+      text-decoration: none;
+      border: 1px solid var(--accent);
+      padding: 5px 12px;
+      border-radius: 4px;
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <h2>LawConnect</h2>
+  <p style="opacity: 0.6; font-size: 0.8rem;">ADMIN PORTAL</p>
+  <br>
+  <div style="display: flex; flex-direction: column; gap: 15px;">
+    <span>📁 Dashboard</span>
+    <span style="color: #60a5fa;">👥 Clients</span>
+    <span>⚖️ Cases</span>
+    <span>📅 Calendar</span>
+  </div>
+</nav>
+
+<main>
+  <div class="header-flex">
+    <h1>Client Management</h1>
+    <a href="#" class="btn-add">+ New Client</a>
+  </div>
+
+  <div class="client-grid">
+    <div class="client-card">
+      <div class="case-badge">Criminal Law</div>
+      <h3 class="client-name">Rajesh Mehta</h3>
+      <div class="contact-info">📧 rajesh@email.com</div>
+      <hr>
+      <div class="actions">
+        <a href="#" class="btn-outline">View File</a>
+        <a href="#" class="btn-outline">Billing</a>
+      </div>
+    </div>
+
+    <div class="client-card">
+      <div class="case-badge" style="background: #fef3c7; color: #92400e;">Civil / Property</div>
+      <h3 class="client-name">Sunita Patel</h3>
+      <div class="contact-info">📧 sunita@email.com</div>
+      <hr>
+      <div class="actions">
+        <a href="#" class="btn-outline">View File</a>
+        <a href="#" class="btn-outline">Billing</a>
+      </div>
+    </div>
+
+    <div class="client-card">
+      <div class="case-badge" style="background: #dcfce7; color: #166534;">Corporate</div>
+      <h3 class="client-name">ABC Corporation</h3>
+      <div class="contact-info">📧 legal@abc.com</div>
+      <hr>
+      <div class="actions">
+        <a href="#" class="btn-outline">View File</a>
+        <a href="#" class="btn-outline">Billing</a>
+      </div>
+    </div>
+  </div>
+</main>
+
+</body>
+</html>

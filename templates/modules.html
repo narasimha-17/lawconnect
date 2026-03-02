@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Modules | LawConnect AI</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+  <style>
+    /* ... Reuse your root and sidebar CSS from the Dashboard ... */
+    :root { --primary-dark: #053742; --primary-accent: #39A2DB; --secondary-accent: #FFD166; --text-dark: #1E2A32; }
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+    body { background: #F8FAFC; display: flex; min-height: 100vh; }
+
+    /* SIDEBAR (Same as Dashboard) */
+    .sidebar-nav { width: 280px; background: linear-gradient(180deg, var(--primary-dark), #002230); color: #fff; padding: 2rem 1.5rem; position: fixed; height: 100vh; display: flex; flex-direction: column; }
+    .sidebar-nav .logo { font-size: 1.9rem; font-weight: 700; margin-bottom: 3rem; }
+    .sidebar-nav .logo span { color: var(--secondary-accent); }
+    .nav-links a { color: #fff; text-decoration: none; padding: 0.8rem 1rem; border-radius: 8px; display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; transition: 0.3s; }
+    .nav-links a:hover, .nav-links a.active { background: rgba(57, 162, 219, 0.2); color: var(--secondary-accent); }
+
+    /* MAIN CONTENT */
+    .main-content { margin-left: 280px; padding: 3rem 4rem; width: 100%; }
+    
+    .page-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; }
+    .page-header h1 { color: var(--primary-dark); font-size: 2.2rem; }
+
+    /* FILTER TABS */
+    .filter-container { display: flex; gap: 1rem; margin-bottom: 2.5rem; flex-wrap: wrap; }
+    .filter-btn { padding: 0.6rem 1.5rem; border-radius: 30px; border: 1px solid #ddd; background: #fff; cursor: pointer; transition: 0.3s; font-weight: 500; color: #666; }
+    .filter-btn:hover, .filter-btn.active { background: var(--primary-accent); color: #fff; border-color: var(--primary-accent); }
+
+    /* COURSE GRID */
+    .course-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 2rem; }
+    
+    .course-card { background: #fff; border-radius: 15px; padding: 1.5rem; box-shadow: 0 4px 15px rgba(0,0,0,0.05); transition: 0.3s; border-top: 5px solid var(--primary-accent); position: relative; }
+    .course-card:hover { transform: translateY(-5px); box-shadow: 0 8px 25px rgba(0,0,0,0.1); }
+    
+    .course-card i { font-size: 1.8rem; color: var(--primary-accent); margin-bottom: 1rem; display: block; }
+    .course-card .category { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; color: #999; font-weight: 700; }
+    .course-card h3 { margin: 0.5rem 0; color: var(--primary-dark); }
+    
+    /* PROGRESS */
+    .progress-bar { background: #eee; height: 8px; border-radius: 10px; margin: 1.5rem 0 0.5rem; overflow: hidden; }
+    .progress-fill { height: 100%; background: var(--primary-accent); border-radius: 10px; }
+    .progress-info { display: flex; justify-content: space-between; font-size: 0.85rem; color: #666; font-weight: 600; }
+    
+    .btn-start { width: 100%; margin-top: 1.5rem; padding: 0.8rem; border: none; border-radius: 8px; background: var(--primary-dark); color: #fff; font-weight: 600; cursor: pointer; transition: 0.3s; }
+    .btn-start:hover { background: var(--primary-accent); }
+
+.brand-badge {
+  position: absolute;
+  top: 1.2rem;
+  right: 1.2rem;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  background: linear-gradient(90deg, #053742, #39A2DB);
+  color: #fff;
+  letter-spacing: 0.5px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+}   
+ .status-completed { background: #dcfce7; color: #15803d; }
+    .status-progress { background: #e0f2fe; color: #0369a1; }
+.btn-start {
+  display: block;
+  text-align: center;
+  text-decoration: none;
+  width: 100%;
+  margin-top: 1.5rem;
+  padding: 0.8rem;
+  border-radius: 8px;
+  background: var(--primary-dark);
+  color: #fff;
+  font-weight: 600;
+  transition: 0.3s;
+}
+  </style>
+</head>
+<body>
+
+<aside class="sidebar-nav">
+  <div class="logo">⚖️ LawConnect <span>AI</span></div>
+  <nav class="nav-links">
+    <a href="/student/dashboard"><i class="fas fa-home"></i> Dashboard</a>
+    <a href="/student/modules" class="active"><i class="fas fa-layer-group"></i> Modules</a>
+    <a href="{{url_for('ai_tutor')}}"><i class="fas fa-robot"></i> AI Legal Tutor</a>
+    
+  </nav>
+</aside>
+
+<main class="main-content">
+  <div class="page-header">
+    <h1>Legal Modules</h1>
+    <div class="search-box">
+        </div>
+  </div>
+
+  <div class="filter-container">
+    <button class="filter-btn active">All Courses</button>
+    
+  </div>
+
+  <div class="course-grid">
+    {% for course in all_modules %}
+    <div class="course-card">
+      <span class="brand-badge">
+  ⚖️ LawConnect AI
+</span>
+      <i class="fas {{ course.icon }}"></i>
+      <span class="category">{{ course.category }}</span>
+      <h3>{{ course.title }}</h3>
+      
+      
+
+      <a href="{{ course.pdf_link }}" target="_blank" class="btn-start">
+  {% if course.progress == 100 %}
+      Review Content
+  {% elif course.progress > 0 %}
+      Continue Learning
+  {% else %}
+      Start Module
+  {% endif %}
+</a>
+    </div>
+    {% endfor %}
+  </div>
+</main>
+
+</body>
+</html>

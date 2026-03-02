@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Legal Tutor | LawConnect AI</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+
+  <style>
+    :root {
+      --primary-dark: #053742;
+      --primary-accent: #39A2DB;
+      --secondary-accent: #FFD166;
+      --bg-light: #F1F5F9;
+      --sidebar-width: 280px;
+      --msg-user-bg: #39A2DB;
+      --msg-bot-bg: #FFFFFF;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+
+    body {
+      display: flex;
+      height: 100vh;
+      background: var(--bg-light);
+      overflow: hidden;
+    }
+
+    /* ===== SIDEBAR ===== */
+    .sidebar {
+      width: var(--sidebar-width);
+      background: linear-gradient(180deg, var(--primary-dark), #002230);
+      color: white;
+      padding: 2rem 1.2rem;
+      display: flex;
+      flex-direction: column;
+      flex-shrink: 0;
+      box-shadow: 4px 0 15px rgba(0, 0, 0, 0.1);
+      z-index: 100;
+    }
+
+    .logo {
+      font-size: 1.7rem;
+      font-weight: 700;
+      margin-bottom: 2.5rem;
+      padding-left: 0.5rem;
+    }
+    .logo span { color: var(--secondary-accent); }
+
+    .nav-links { flex-grow: 1; }
+
+    .nav-links a {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      padding: 14px 18px;
+      border-radius: 12px;
+      text-decoration: none;
+      color: rgba(255, 255, 255, 0.7);
+      margin-bottom: 8px;
+      font-weight: 500;
+      transition: all 0.3s ease;
+    }
+
+    .nav-links a i { font-size: 1.1rem; width: 20px; text-align: center; }
+
+    .nav-links a:hover,
+    .nav-links a.active {
+      background: rgba(57, 162, 219, 0.15);
+      color: var(--secondary-accent);
+      transform: translateX(5px);
+    }
+
+    /* PROFILE SECTION */
+    .user-info {
+      margin-top: auto;
+      padding-top: 1.5rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      position: relative;
+      cursor: pointer;
+    }
+
+    .user-avatar {
+      width: 42px;
+      height: 42px;
+      background: var(--secondary-accent);
+      color: var(--primary-dark);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      box-shadow: 0 4px 10px rgba(255, 209, 102, 0.3);
+    }
+
+    .user-name { font-size: 0.95rem; font-weight: 500; color: white; }
+
+    .dropdown-menu {
+      position: absolute;
+      bottom: 110%;
+      left: 0;
+      width: 100%;
+      background: white;
+      border-radius: 12px;
+      margin-bottom: 10px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+      display: none;
+      flex-direction: column;
+      overflow: hidden;
+      animation: slideUp 0.3s ease;
+    }
+
+    @keyframes slideUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+    .dropdown-menu a {
+      padding: 12px 15px;
+      color: var(--primary-dark);
+      text-decoration: none;
+      font-size: 0.9rem;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .dropdown-menu a:hover { background: #f0f7f9; color: var(--primary-accent); }
+
+    /* ===== MAIN CONTENT ===== */
+    .main-wrapper {
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+    }
+
+    .main-header {
+      padding: 1.2rem 3rem;
+      background: white;
+      border-bottom: 1px solid #e2e8f0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .page-title { font-size: 1.4rem; font-weight: 700; color: var(--primary-dark); }
+
+    .chat-interface {
+      flex: 1;
+      padding: 2rem;
+      display: flex;
+      flex-direction: column;
+      max-width: 1100px;
+      margin: 0 auto;
+      width: 100%;
+      overflow: hidden;
+    }
+
+    .chat-container {
+      flex: 1;
+      background: #f8fafc;
+      border-radius: 24px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      border: 1px solid #e2e8f0;
+    }
+
+    /* MODE TABS */
+    .mode-tabs {
+      display: flex;
+      background: #fff;
+      padding: 10px;
+      gap: 8px;
+      border-bottom: 1px solid #e2e8f0;
+    }
+
+    .mode-tabs button {
+      flex: 1;
+      padding: 10px;
+      border: 1px solid transparent;
+      background: #f1f5f9;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.85rem;
+      border-radius: 10px;
+      color: #64748b;
+      transition: all 0.3s;
+    }
+
+    .mode-tabs button.active {
+      background: white;
+      color: var(--primary-accent);
+      border-color: #e2e8f0;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+    }
+
+    .chat-box {
+      flex: 1;
+      padding: 2rem;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      background-image: radial-gradient(#cbd5e1 0.5px, transparent 0.5px);
+      background-size: 20px 20px;
+    }
+
+    .msg {
+      max-width: 75%;
+      padding: 14px 20px;
+      border-radius: 18px;
+      line-height: 1.6;
+      font-size: 0.95rem;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+      animation: msgIn 0.3s ease;
+    }
+
+    @keyframes msgIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+    .user { align-self: flex-end; background: var(--primary-accent); color: white; border-bottom-right-radius: 4px; }
+    .bot { align-self: flex-start; background: white; color: #334155; border-bottom-left-radius: 4px; border-left: 4px solid var(--primary-accent); }
+
+    /* INPUT AREA */
+    .input-area {
+      padding: 20px 25px;
+      background: white;
+      border-top: 1px solid #e2e8f0;
+      display: flex;
+      gap: 12px;
+    }
+
+    .input-wrapper { flex: 1; }
+
+    .input-area input {
+      width: 100%;
+      padding: 14px 20px;
+      border-radius: 12px;
+      border: 2px solid #f1f5f9;
+      background: #f8fafc;
+      outline: none;
+      font-size: 0.95rem;
+    }
+
+    .input-area button {
+      padding: 0 25px;
+      background: var(--primary-dark);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: 0.3s;
+    }
+
+    .input-area button:hover { background: #002230; transform: translateY(-2px); }
+
+  </style>
+</head>
+
+<body>
+
+<aside class="sidebar">
+  <div class="logo">⚖️ LawConnect <span>AI</span></div>
+
+  <nav class="nav-links">
+    <a href="{{ url_for('student_dashboard') }}"><i class="fas fa-th-large"></i> Dashboard</a>
+    <a href="{{ url_for('student_modules') }}"><i class="fas fa-layer-group"></i> Modules</a>
+    <a href="{{ url_for('ai_tutor') }}" class="active"><i class="fas fa-robot"></i> AI Tutor</a>
+  </nav>
+
+  <div class="user-info" id="profileMenu">
+    <div class="user-avatar">{{ student.full_name[0] if student and student.full_name else "S" }}</div>
+    <span class="user-name">{{ student.full_name if student else "Student" }}</span>
+    <div class="dropdown-menu" id="dropdownMenu">
+      <a href="{{ url_for('student_dashboard') }}"><i class="fas fa-user-circle"></i> Profile</a>
+      <a href="{{ url_for('logout') }}" style="color: #e74c3c;"><i class="fas fa-sign-out-alt"></i> Logout</a>
+    </div>
+  </div>
+</aside>
+
+<div class="main-wrapper">
+  <header class="main-header">
+    <div class="page-title">🤖 AI Legal Tutor</div>
+    <div style="font-size: 0.85rem; font-weight: 600; background: #ecfdf5; padding: 5px 12px; border-radius: 20px; color: #059669;">
+        ● Online
+    </div>
+  </header>
+
+  <div class="chat-interface">
+    <div class="chat-container">
+      <div class="mode-tabs">
+        <button class="active" onclick="switchMode('chat')" id="chat-btn">AI Chat</button>
+        <button onclick="switchMode('mcq')" id="mcq-btn">Law MCQs</button>
+        <button onclick="switchMode('debate')" id="debate-btn">AI Debate</button>
+        <button onclick="switchMode('trial')" id="trial-btn">Mock Trial</button>
+      </div>
+
+      <div class="chat-box" id="chat-box">
+        <div class="msg bot">
+          👋 <b>Greetings, Counselor.</b><br>
+          I am your Legal AI Tutor. How can I assist your research today?
+        </div>
+      </div>
+
+      <div class="input-area">
+        <div class="input-wrapper">
+          <input type="text" id="user-input" placeholder="Explain a legal concept or start a trial..." onkeypress="if(event.key === 'Enter') sendMessage()"/>
+        </div>
+        <button onclick="sendMessage()">Send <i class="fas fa-paper-plane"></i></button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+<script>
+  let mode = "chat";
+
+// ===== Profile Menu Logic =====
+const profileMenu = document.getElementById('profileMenu');
+const dropdownMenu = document.getElementById('dropdownMenu');
+
+profileMenu.addEventListener('click', (e) => {
+    e.stopPropagation();
+    dropdownMenu.style.display =
+        dropdownMenu.style.display === 'flex' ? 'none' : 'flex';
+});
+
+window.addEventListener('click', () => {
+    dropdownMenu.style.display = 'none';
+});
+
+// ===== Mode Switching =====
+function switchMode(newMode) {
+  mode = newMode;
+
+  document.querySelectorAll(".mode-tabs button")
+    .forEach(btn => btn.classList.remove("active"));
+
+  document.getElementById(newMode + "-btn")
+    .classList.add("active");
+
+  const chatBox = document.getElementById("chat-box");
+
+  const welcomeMsg = {
+    chat: "I am ready for your questions. What legal concept shall we explore?",
+    mcq: "Ready for a challenge? I'll generate a multiple-choice question for you.",
+    debate: "Present your opening statement. I will counter your legal logic.",
+    trial: "<b>Court is now in session.</b> I am the Presiding Judge. State your opening arguments."
+  };
+
+  const botMsg = document.createElement("div");
+  botMsg.classList.add("msg", "bot");
+  botMsg.innerHTML = `<b>Mode Switched:</b> ${welcomeMsg[newMode]}`;
+
+  chatBox.appendChild(botMsg);
+  chatBox.scrollTop = chatBox.scrollHeight;
+}
+
+// ===== REAL BACKEND CONNECTED SEND MESSAGE =====
+async function sendMessage() {
+  const input = document.getElementById("user-input");
+  const chatBox = document.getElementById("chat-box");
+
+  if (input.value.trim() === "") return;
+
+  const userText = input.value;
+
+  // Add user message
+  const userMsg = document.createElement("div");
+  userMsg.classList.add("msg", "user");
+  userMsg.textContent = userText;
+  chatBox.appendChild(userMsg);
+
+  chatBox.scrollTop = chatBox.scrollHeight;
+
+  input.value = "";
+
+  // Typing indicator
+  const typingMsg = document.createElement("div");
+  typingMsg.classList.add("msg", "bot");
+  typingMsg.textContent = "Thinking...";
+  chatBox.appendChild(typingMsg);
+
+  chatBox.scrollTop = chatBox.scrollHeight;
+
+  try {
+    const response = await fetch("/student/ai-tutor/ask", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        question: userText,
+        mode: mode
+      })
+    });
+
+    const data = await response.json();
+
+    if (data.response) {
+      typingMsg.innerHTML = data.response;
+    } else {
+      typingMsg.textContent = "⚠️ Unexpected response from server.";
+    }
+
+  } catch (error) {
+    typingMsg.textContent = "⚠️ AI Tutor failed to respond.";
+  }
+
+  chatBox.scrollTop = chatBox.scrollHeight;
+}
+</script>
+
+</body>
+</html>

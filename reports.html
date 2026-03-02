@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Academic Reports</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+
+        /* Animation for progress bars */
+        .chart-bar {
+            transition: height 1s ease-in-out;
+            height: 0;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 font-sans antialiased text-slate-900">
+
+    <div class="flex min-h-screen">
+        <aside class="w-64 bg-indigo-950 text-white hidden md:flex flex-col shadow-2xl">
+            <div class="p-6 text-2xl font-bold border-b border-indigo-900 flex items-center">
+                <div class="bg-indigo-500 p-2 rounded-lg mr-3">
+                    <i class="fas fa-graduation-cap text-white text-xl"></i>
+                </div>
+                EduDash
+            </div>
+            
+            <nav class="mt-6 flex-1">
+                <a href="#" class="flex items-center py-3 px-6 text-indigo-200 hover:text-white hover:bg-indigo-900 transition">
+                    <i class="fas fa-users mr-3 opacity-60"></i> Students
+                </a>
+                <a href="#" class="flex items-center py-3 px-6 text-indigo-200 hover:text-white hover:bg-indigo-900 transition">
+                    <i class="fas fa-balance-scale mr-3 opacity-60"></i> Mock Trials
+                </a>
+                <a href="#" class="flex items-center py-3 px-6 bg-indigo-800 text-white border-l-4 border-indigo-400 font-bold">
+                    <i class="fas fa-chart-line mr-3"></i> Reports
+                </a>
+            </nav>
+        </aside>
+
+        <main class="flex-1 p-8 lg:p-12 overflow-y-auto">
+            <header class="flex flex-col md:flex-row justify-between items-start md:items-center mb-10 gap-4">
+                <div>
+                    <h1 class="text-4xl font-extrabold tracking-tight text-slate-800">Analytics & Reports</h1>
+                    <p class="text-slate-500 mt-1 text-sm font-medium">Insights into academic performance and trial success.</p>
+                </div>
+                <div class="flex gap-3">
+                    <button class="bg-white border border-slate-200 text-slate-700 px-5 py-2.5 rounded-xl shadow-sm hover:bg-slate-50 transition font-bold flex items-center">
+                        <i class="fas fa-calendar-alt mr-2"></i> Last 30 Days
+                    </button>
+                    <button class="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-2.5 rounded-xl shadow-lg shadow-indigo-200 transition-all font-bold flex items-center">
+                        <i class="fas fa-file-export mr-2"></i> Export All
+                    </button>
+                </div>
+            </header>
+
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-10">
+                <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm">
+                    <p class="text-xs font-black text-slate-400 uppercase tracking-widest">Pass Rate</p>
+                    <div class="flex items-end justify-between mt-2">
+                        <h2 class="text-3xl font-black text-slate-800">88.4%</h2>
+                        <span class="text-green-500 text-xs font-bold bg-green-50 px-2 py-1 rounded-lg">+2.1%</span>
+                    </div>
+                </div>
+                <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm">
+                    <p class="text-xs font-black text-slate-400 uppercase tracking-widest">Trial Wins</p>
+                    <div class="flex items-end justify-between mt-2">
+                        <h2 class="text-3xl font-black text-slate-800">42</h2>
+                        <span class="text-indigo-500 text-xs font-bold bg-indigo-50 px-2 py-1 rounded-lg">Target: 50</span>
+                    </div>
+                </div>
+                <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm">
+                    <p class="text-xs font-black text-slate-400 uppercase tracking-widest">Course Completion</p>
+                    <div class="flex items-end justify-between mt-2">
+                        <h2 class="text-3xl font-black text-slate-800">76%</h2>
+                        <div class="w-20 bg-slate-100 h-2 rounded-full overflow-hidden self-center">
+                            <div class="bg-indigo-500 h-full w-[76%]"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm">
+                    <p class="text-xs font-black text-slate-400 uppercase tracking-widest">Active Research</p>
+                    <div class="flex items-end justify-between mt-2">
+                        <h2 class="text-3xl font-black text-slate-800">14</h2>
+                        <span class="text-rose-500 text-xs font-bold bg-rose-50 px-2 py-1 rounded-lg">-3%</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <div class="lg:col-span-2 bg-white p-8 rounded-2xl border border-slate-100 shadow-sm">
+                    <h3 class="text-lg font-bold text-slate-800 mb-6">Student Activity Trend</h3>
+                    <div class="flex items-end justify-between h-48 gap-2">
+                        <div class="flex flex-col items-center flex-1 gap-2">
+                            <div class="w-full bg-indigo-100 rounded-t-md hover:bg-indigo-500 transition-colors cursor-pointer" style="height: 40%"></div>
+                            <span class="text-[10px] font-bold text-slate-400">MON</span>
+                        </div>
+                        <div class="flex flex-col items-center flex-1 gap-2">
+                            <div class="w-full bg-indigo-100 rounded-t-md hover:bg-indigo-500 transition-colors cursor-pointer" style="height: 65%"></div>
+                            <span class="text-[10px] font-bold text-slate-400">TUE</span>
+                        </div>
+                        <div class="flex flex-col items-center flex-1 gap-2">
+                            <div class="w-full bg-indigo-500 rounded-t-md cursor-pointer" style="height: 90%"></div>
+                            <span class="text-[10px] font-bold text-slate-900">WED</span>
+                        </div>
+                        <div class="flex flex-col items-center flex-1 gap-2">
+                            <div class="w-full bg-indigo-100 rounded-t-md hover:bg-indigo-500 transition-colors cursor-pointer" style="height: 55%"></div>
+                            <span class="text-[10px] font-bold text-slate-400">THU</span>
+                        </div>
+                        <div class="flex flex-col items-center flex-1 gap-2">
+                            <div class="w-full bg-indigo-100 rounded-t-md hover:bg-indigo-500 transition-colors cursor-pointer" style="height: 80%"></div>
+                            <span class="text-[10px] font-bold text-slate-400">FRI</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white p-8 rounded-2xl border border-slate-100 shadow-sm">
+                    <h3 class="text-lg font-bold text-slate-800 mb-6">Recent Files</h3>
+                    <div class="space-y-4">
+                        <div class="flex items-center p-3 hover:bg-slate-50 rounded-xl transition border border-transparent hover:border-slate-100 group">
+                            <div class="h-10 w-10 bg-red-50 text-red-500 flex items-center justify-center rounded-lg mr-4">
+                                <i class="fas fa-file-pdf"></i>
+                            </div>
+                            <div class="flex-1">
+                                <p class="text-sm font-bold text-slate-700">Q4_Academic_Results.pdf</p>
+                                <p class="text-[10px] text-slate-400">Feb 18, 2026 • 2.4MB</p>
+                            </div>
+                            <button class="opacity-0 group-hover:opacity-100 text-slate-400 hover:text-indigo-600 transition">
+                                <i class="fas fa-download"></i>
+                            </button>
+                        </div>
+                        <div class="flex items-center p-3 hover:bg-slate-50 rounded-xl transition border border-transparent hover:border-slate-100 group">
+                            <div class="h-10 w-10 bg-green-50 text-green-500 flex items-center justify-center rounded-lg mr-4">
+                                <i class="fas fa-file-excel"></i>
+                            </div>
+                            <div class="flex-1">
+                                <p class="text-sm font-bold text-slate-700">Mock_Trial_Performance.xlsx</p>
+                                <p class="text-[10px] text-slate-400">Feb 15, 2026 • 1.1MB</p>
+                            </div>
+                            <button class="opacity-0 group-hover:opacity-100 text-slate-400 hover:text-indigo-600 transition">
+                                <i class="fas fa-download"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <button class="w-full mt-6 py-3 border-2 border-dashed border-slate-200 text-slate-400 rounded-xl hover:border-indigo-400 hover:text-indigo-500 transition font-bold text-sm">
+                        Generate Custom Report
+                    </button>
+                </div>
+            </div>
+        </main>
+    </div>
+
+</body>
+</html>

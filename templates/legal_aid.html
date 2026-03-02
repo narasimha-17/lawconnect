@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Legal Aid | LawConnect AI</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f8fb;
+      padding: 30px;
+    }
+    h1 {
+      color: #1f3c88;
+    }
+    .card {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+    }
+    label {
+      font-weight: bold;
+    }
+    input, select, textarea {
+      width: 100%;
+      padding: 10px;
+      margin-top: 8px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
+    button {
+      margin-top: 12px;
+      padding: 10px 16px;
+      background: #1f8ef1;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+<h1>⚖️ Legal Aid</h1>
+<p>Register and manage free legal aid requests.</p>
+
+<div class="card">
+  <label>Citizen Name</label>
+  <input type="text" placeholder="Enter citizen name">
+
+  <label style="margin-top:10px;">Legal Issue Type</label>
+  <select>
+    <option>Criminal</option>
+    <option>Family</option>
+    <option>Property</option>
+    <option>Labour</option>
+    <option>Women Safety</option>
+  </select>
+
+  <label style="margin-top:10px;">Issue Description</label>
+  <textarea rows="5" placeholder="Describe the legal problem..."></textarea>
+
+  <button>Register Legal Aid Request</button>
+</div>
+
+<div class="card">
+  <h3>Pending Legal Aid Requests</h3>
+  <ul>
+    <li>Sunita – Domestic Violence Case</li>
+    <li>Ramesh – Labour Dispute</li>
+    <li>Ayesha – Property Issue</li>
+  </ul>
+</div>
+
+</body>
+</html>
