@@ -3,176 +3,221 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>LawConnect AI | Dashboard</title>
+  <title>Clients | LawConnect AI</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+
   <style>
     :root {
-      --primary: #1e293b; /* Deep Navy */
-      --accent: #2563eb;  /* Professional Blue */
-      --bg: #f8fafc;
-      --text: #334155;
-      --white: #ffffff;
+      --primary-dark: #053742;
+      --primary-accent: #39A2DB;
+      --secondary-accent: #FFD166;
+      --bg-light: #F1F5F9;
+      --sidebar-width: 280px;
     }
 
-    body { 
-      font-family: 'Inter', -apple-system, sans-serif; 
-      background-color: var(--bg); 
-      color: var(--text);
-      margin: 0;
-      display: flex;
-    }
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+    body { display: flex; height: 100vh; background: var(--bg-light); overflow: hidden; }
 
-    /* Sidebar Navigation */
-    nav {
-      width: 240px;
-      background: var(--primary);
-      height: 100vh;
+    /* SIDEBAR */
+    .sidebar {
+      width: var(--sidebar-width);
+      background: linear-gradient(180deg, var(--primary-dark), #002230);
       color: white;
-      padding: 20px;
-      position: fixed;
-    }
-
-    /* Main Content Area */
-    main {
-      margin-left: 280px;
-      padding: 40px;
-      width: 100%;
-    }
-
-    .header-flex {
+      padding: 2rem 1.2rem;
       display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 30px;
+      flex-direction: column;
+      flex-shrink: 0;
+      box-shadow: 4px 0 15px rgba(0, 0, 0, 0.1);
+      z-index: 100;
     }
 
-    .btn-add {
-      background: var(--accent);
-      color: white;
-      padding: 10px 20px;
-      border-radius: 6px;
-      text-decoration: none;
-      font-weight: 600;
+    .logo { font-size: 1.7rem; font-weight: 700; margin-bottom: 3rem; padding-left: 0.5rem; }
+    .logo span { color: var(--secondary-accent); }
+    .nav-links { flex-grow: 1; }
+    .nav-links a {
+      display: flex; align-items: center; gap: 15px; padding: 14px 18px; border-radius: 12px;
+      text-decoration: none; color: rgba(255, 255, 255, 0.7); margin-bottom: 10px; font-weight: 500; transition: 0.3s;
     }
+    .nav-links a:hover, .nav-links a.active { background: rgba(57, 162, 219, 0.15); color: var(--secondary-accent); transform: translateX(5px); }
 
-    /* Grid Layout for Client Cards */
-    .client-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-      gap: 20px;
+    /* PROFILE */
+    .user-info {
+      margin-top: auto; padding-top: 1.5rem; border-top: 1px solid rgba(255, 255, 255, 0.1);
+      display: flex; align-items: center; gap: 12px; position: relative; cursor: pointer;
     }
+    .user-avatar { width: 42px; height: 42px; background: var(--secondary-accent); color: var(--primary-dark); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-weight: 700; }
+    .user-name { font-size: 0.95rem; font-weight: 500; color: white; }
 
-    .client-card {
-      background: var(--white);
-      padding: 24px;
-      border-radius: 12px;
-      border: 1px solid #e2e8f0;
-      transition: transform 0.2s, box-shadow 0.2s;
+    .dropdown-menu {
+      position: absolute; bottom: 110%; left: 0; width: 100%;
+      background: white; border-radius: 12px; margin-bottom: 10px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.2); display: none; flex-direction: column; overflow: hidden;
     }
+    .dropdown-menu a { padding: 12px 15px; color: var(--primary-dark); text-decoration: none; font-size: 0.9rem; display: flex; align-items: center; gap: 10px; }
+    .dropdown-menu a:hover { background: #f0f7f9; color: var(--primary-accent); }
 
-    .client-card:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    /* MAIN WRAPPER */
+    .main-wrapper { flex-grow: 1; display: flex; flex-direction: column; height: 100vh; overflow-y: auto; }
+    .main-header { padding: 1.2rem 3rem; background: white; border-bottom: 1px solid #e2e8f0; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 50; }
+    .page-title { font-size: 1.4rem; font-weight: 700; color: var(--primary-dark); }
+    .btn-add { background: var(--primary-accent); color: white; padding: 10px 20px; border-radius: 10px; text-decoration: none; font-weight: 600; font-size: 0.9rem; display: flex; align-items: center; gap: 8px; transition: 0.3s; cursor: pointer; border: none; }
+    .btn-add:hover { background: var(--primary-dark); }
+
+    /* CLIENT GRID */
+    .content-area { padding: 2.5rem 3rem; max-width: 1300px; }
+    .client-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 1.5rem; }
+    .client-card { background: white; padding: 1.8rem; border-radius: 20px; border: 1px solid #e2e8f0; transition: all 0.3s ease; position: relative; }
+    .client-card:hover { transform: translateY(-8px); box-shadow: 0 15px 35px rgba(0,0,0,0.06); border-color: var(--primary-accent); }
+    .client-id { position: absolute; top: 1.8rem; right: 1.8rem; font-size: 0.75rem; font-weight: 700; color: #94a3b8; }
+    .client-name { font-size: 1.25rem; color: var(--primary-dark); margin-bottom: 1rem; font-weight: 700; }
+    .contact-item { font-size: 0.85rem; color: #64748b; margin-bottom: 8px; display: flex; align-items: center; gap: 10px; }
+
+    /* CARD ACTIONS */
+    .card-actions { margin-top: 1.4rem; padding-top: 1.2rem; border-top: 1px solid #f1f5f9; }
+    .btn-outline { display: block; text-align: center; font-size: 0.8rem; font-weight: 600; color: var(--primary-dark); text-decoration: none; border: 1.5px solid #e2e8f0; padding: 8px; border-radius: 10px; transition: 0.2s; }
+    .btn-outline:hover { background: #f8fafc; border-color: var(--primary-accent); color: var(--primary-accent); }
+
+    /* MODAL */
+    .modal-overlay {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.6); backdrop-filter: blur(4px);
+      display: none; justify-content: center; align-items: center; z-index: 1000;
     }
+    .modal-box { background: white; width: 450px; padding: 30px; border-radius: 24px; box-shadow: 0 20px 40px rgba(0,0,0,0.2); animation: slideUp 0.3s ease-out; }
+    @keyframes slideUp { from { transform: translateY(30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+    .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
+    .modal-header h2 { font-size: 22px; color: var(--primary-dark); }
+    .close-btn { font-size: 28px; cursor: pointer; color: #94a3b8; transition: 0.2s; }
+    .close-btn:hover { color: #e74c3c; }
+    .modal-form { display: flex; flex-direction: column; gap: 18px; }
+    .form-group { display: flex; flex-direction: column; gap: 6px; }
+    .form-group label { font-size: 13px; font-weight: 600; color: #64748b; }
+    .form-group input { padding: 12px; border-radius: 10px; border: 1px solid #e2e8f0; outline: none; transition: 0.3s; background: #f8fafc; }
+    .form-group input:focus { border-color: var(--primary-accent); background: white; }
+    .btn-submit { margin-top: 10px; background: var(--primary-accent); border: none; color: white; padding: 14px; border-radius: 12px; font-weight: 600; cursor: pointer; transition: 0.3s; }
+    .btn-submit:hover { background: var(--primary-dark); transform: translateY(-2px); }
 
-    .client-name {
-      font-size: 1.25rem;
-      font-weight: 700;
-      color: var(--primary);
-      margin: 0 0 8px 0;
-    }
-
-    .case-badge {
-      display: inline-block;
-      padding: 4px 12px;
-      border-radius: 20px;
-      font-size: 0.75rem;
-      font-weight: 600;
-      background: #e0f2fe;
-      color: #0369a1;
-      margin-bottom: 15px;
-    }
-
-    .contact-info {
-      font-size: 0.9rem;
-      color: #64748b;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    hr { border: 0; border-top: 1px solid #f1f5f9; margin: 15px 0; }
-
-    .actions {
-      display: flex;
-      gap: 10px;
-      margin-top: 15px;
-    }
-
-    .btn-outline {
-      font-size: 0.85rem;
-      color: var(--accent);
-      text-decoration: none;
-      border: 1px solid var(--accent);
-      padding: 5px 12px;
-      border-radius: 4px;
-    }
+    .empty-state { background: white; padding: 60px; border-radius: 24px; text-align: center; border: 1px solid #e2e8f0; grid-column: 1 / -1; }
   </style>
 </head>
+
 <body>
 
-<nav>
-  <h2>LawConnect</h2>
-  <p style="opacity: 0.6; font-size: 0.8rem;">ADMIN PORTAL</p>
-  <br>
-  <div style="display: flex; flex-direction: column; gap: 15px;">
-    <span>📁 Dashboard</span>
-    <span style="color: #60a5fa;">👥 Clients</span>
-    <span>⚖️ Cases</span>
-    <span>📅 Calendar</span>
-  </div>
-</nav>
+  <aside class="sidebar">
+    <div class="logo">⚖️ LawConnect <span>AI</span></div>
+    <nav class="nav-links">
+      <a href="{{ url_for('advocate_dashboard') }}"><i class="fas fa-th-large"></i> Dashboard</a>
+      <a href="{{ url_for('advocate_cases') }}"><i class="fas fa-briefcase"></i> My Cases</a>
+      <a href="#" class="active"><i class="fas fa-users"></i> Clients</a>
+      <a href="{{ url_for('ai_assistant') }}"><i class="fas fa-robot"></i> AI Assistant</a>
+      <a href="{{ url_for('legal_resources') }}"><i class="fas fa-book"></i> Resources</a>
+    </nav>
 
-<main>
-  <div class="header-flex">
-    <h1>Client Management</h1>
-    <a href="#" class="btn-add">+ New Client</a>
-  </div>
-
-  <div class="client-grid">
-    <div class="client-card">
-      <div class="case-badge">Criminal Law</div>
-      <h3 class="client-name">Rajesh Mehta</h3>
-      <div class="contact-info">📧 rajesh@email.com</div>
-      <hr>
-      <div class="actions">
-        <a href="#" class="btn-outline">View File</a>
-        <a href="#" class="btn-outline">Billing</a>
+    <div class="user-info" id="profileMenu">
+      <div class="user-avatar">{{ advocate.name[0] if advocate else "A" }}</div>
+      <span class="user-name">{{ advocate.name if advocate else "Advocate" }}</span>
+      <div class="dropdown-menu" id="dropdownMenu">
+        <a href="#"><i class="fas fa-user-circle"></i> Profile</a>
+        <a href="{{ url_for('logout') }}" style="color:#e74c3c;"><i class="fas fa-sign-out-alt"></i> Logout</a>
       </div>
     </div>
+  </aside>
 
-    <div class="client-card">
-      <div class="case-badge" style="background: #fef3c7; color: #92400e;">Civil / Property</div>
-      <h3 class="client-name">Sunita Patel</h3>
-      <div class="contact-info">📧 sunita@email.com</div>
-      <hr>
-      <div class="actions">
-        <a href="#" class="btn-outline">View File</a>
-        <a href="#" class="btn-outline">Billing</a>
-      </div>
-    </div>
+  <div class="main-wrapper">
+    <header class="main-header">
+      <div class="page-title">👥 Client Directory</div>
+      <button class="btn-add" onclick="openModal()">
+        <i class="fas fa-plus"></i> New Client
+      </button>
+    </header>
 
-    <div class="client-card">
-      <div class="case-badge" style="background: #dcfce7; color: #166534;">Corporate</div>
-      <h3 class="client-name">ABC Corporation</h3>
-      <div class="contact-info">📧 legal@abc.com</div>
-      <hr>
-      <div class="actions">
-        <a href="#" class="btn-outline">View File</a>
-        <a href="#" class="btn-outline">Billing</a>
+    <div class="content-area">
+      
+      <div class="client-grid">
+        {% if clients %}
+          {% for client in clients %}
+          <div class="client-card">
+            <span class="client-id">#{{ client.client_id }}</span>
+            <h3 class="client-name">{{ client.name }}</h3>
+            <div class="contact-item"><i class="fas fa-envelope"></i> {{ client.email }}</div>
+            <div class="contact-item"><i class="fas fa-phone"></i> {{ client.phone }}</div>
+            <div class="contact-item"><i class="fas fa-map-marker-alt"></i> {{ client.address }}</div>
+            <div class="card-actions">
+              <a href="#" class="btn-outline"><i class="fas fa-folder-open"></i> View File</a>
+            </div>
+          </div>
+          {% endfor %}
+        {% else %}
+          <div class="empty-state">
+            <i class="fas fa-user-slash" style="font-size: 40px; color: #cbd5e1; margin-bottom: 15px;"></i>
+            <h3>No Clients Yet</h3>
+            <p>Add your first client to start managing cases.</p>
+          </div>
+        {% endif %}
       </div>
     </div>
   </div>
-</main>
+
+  <div class="modal-overlay" id="clientModal">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h2>Add New Client</h2>
+        <span class="close-btn" onclick="closeModal()">&times;</span>
+      </div>
+
+      <form method="POST" action="/add_client" class="modal-form">
+        <div class="form-group">
+          <label>Client Name</label>
+          <input type="text" name="name" placeholder="Enter full name" required>
+        </div>
+        <div class="form-group">
+          <label>Email Address</label>
+          <input type="email" name="email" placeholder="client@example.com">
+        </div>
+        <div class="form-group">
+          <label>Phone Number</label>
+          <input type="text" name="phone" placeholder="+91 00000 00000">
+        </div>
+        <div class="form-group">
+          <label>Residential Address</label>
+          <input type="text" name="address" placeholder="City, State">
+        </div>
+        <button type="submit" class="btn-submit">Add Client Account</button>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    // Profile Dropdown Logic
+    const profileMenu = document.getElementById('profileMenu');
+    const dropdownMenu = document.getElementById('dropdownMenu');
+
+    profileMenu.addEventListener('click', (e) => {
+      e.stopPropagation();
+      dropdownMenu.style.display = dropdownMenu.style.display === 'flex' ? 'none' : 'flex';
+    });
+
+    // Modal Logic
+    const modal = document.getElementById('clientModal');
+
+    function openModal() {
+      modal.style.display = 'flex';
+    }
+
+    function closeModal() {
+      modal.style.display = 'none';
+    }
+
+    // Global click listener to close menus
+    window.addEventListener('click', (e) => {
+      dropdownMenu.style.display = 'none';
+      if (e.target === modal) {
+        closeModal();
+      }
+    });
+  </script>
 
 </body>
 </html>

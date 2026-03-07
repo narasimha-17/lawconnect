@@ -190,13 +190,16 @@ class Lawyer(db.Model):
 # ---------------- CASE MODEL ----------------
 class Case(db.Model):
     __tablename__ = "cases"
+
     case_id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey("users.id"))
+    user_id = db.Column(db.Integer)
+    advocate_id = db.Column(db.Integer)   # ADD THIS
     title = db.Column(db.String(200))
     description = db.Column(db.Text)
     status = db.Column(db.String(50))
-    ngo_id = db.Column(db.Integer, db.ForeignKey("ngo.ngo_id"))
-    institution_id = db.Column(db.Integer, db.ForeignKey("institutions.institution_id"))
+    ngo_id = db.Column(db.Integer)
+    institution_id = db.Column(db.Integer)
+    created_at = db.Column(db.DateTime)
 
 
 # ---------------- CASE ASSIGNMENT MODEL ----------------
@@ -214,6 +217,44 @@ class ChatHistory(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey("users.id"))
     message = db.Column(db.Text)
     response = db.Column(db.Text)
+
+
+#----------------- client MODEL ----------------
+class Client(db.Model):
+    __tablename__ = "clients"
+
+    client_id = db.Column(db.Integer, primary_key=True)
+    advocate_id = db.Column(db.Integer)
+    name = db.Column(db.String(150))
+    email = db.Column(db.String(150))
+    phone = db.Column(db.String(20))
+    address = db.Column(db.Text)
+    created_at = db.Column(db.DateTime, default=db.func.current_timestamp())
+
+
+#---------Appointment MODEL----------------
+class Appointment(db.Model):
+    __tablename__ = "appointments"
+
+    appointment_id = db.Column(db.Integer, primary_key=True)
+    advocate_id = db.Column(db.Integer)
+    client_id = db.Column(db.Integer)
+    appointment_date = db.Column(db.DateTime)
+    meeting_type = db.Column(db.String(20))
+    status = db.Column(db.String(20))
+    notes = db.Column(db.Text)
+
+
+#-------------Advocate MODEL----------------
+class Advocate(db.Model):
+    __tablename__ = "advocates"
+
+    advocate_id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer)
+    name = db.Column(db.String(100))
+    email = db.Column(db.String(100))
+
+
 
 # ---------------- HOME ----------------
 @app.route("/")
@@ -415,11 +456,95 @@ def advocate_dashboard():
     if session.get("role") != "advocate":
         return redirect(url_for("login"))
 
-    user = User.query.get(session.get("user_id"))
+    advocate_id = session.get("user_id")
+
+    # Get advocate info
+    advocate = User.query.get(advocate_id)
+
+    # Active cases
+    active_cases = Case.query.filter_by(
+        advocate_id=advocate_id
+    ).filter(Case.status != "Closed").all()
+
+    # Clients
+    clients = Client.query.filter_by(
+        advocate_id=advocate_id
+    ).all()
+
+    # Upcoming appointments
+    appointments = Appointment.query.filter_by(
+        advocate_id=advocate_id
+    ).order_by(Appointment.appointment_date.asc()).limit(5).all()
 
     return render_template(
         "advocateDashboard.html",
-        advocate=user
+        advocate=advocate,
+        active_cases=active_cases,
+        clients=clients,
+        appointments=appointments
+    )
+
+@app.route("/advocate/my-cases")
+def advocate_cases():
+
+    if session.get("role") != "advocate":
+        return redirect(url_for("login"))
+
+    advocate_id = session.get("user_id")
+
+    advocate = User.query.get(advocate_id)
+
+    cases = Case.query.filter_by(
+        advocate_id=advocate_id
+    ).all()
+
+    return render_template(
+        "advocateCases.html",
+        advocate=advocate,
+        cases=cases
+    )
+@app.route("/advocate/clients")
+def clients():
+
+    if session.get("role") != "advocate":
+        return redirect(url_for("login"))
+
+    user_id = session.get("user_id")
+
+    advocate = Advocate.query.filter_by(user_id=user_id).first()
+
+    clients = Client.query.filter_by(
+        advocate_id=advocate.advocate_id
+    ).all()
+
+    return render_template(
+        "clientManagement.html",
+        clients=clients,
+        advocate=advocate
+    )
+@app.route("/advocate/ai-assistant")
+def ai_assistant():
+    if session.get("role") != "advocate":
+        return redirect(url_for("login"))
+
+    advocate_id = session.get("user_id")
+    advocate = User.query.get(advocate_id)
+
+    return render_template(
+        "Ai-leagal_research.html",
+        advocate=advocate
+    )
+@app.route("/advocate/legal-resources")
+def legal_resources():
+    if session.get("role") != "advocate":
+        return redirect(url_for("login"))
+
+    advocate_id = session.get("user_id")
+    advocate = User.query.get(advocate_id)
+
+    return render_template(
+        "legal_resources.html",
+        advocate=advocate
     )
 #--------------NGO DASHBOARD----------------
 @app.route("/ngo/dashboard")
