@@ -304,13 +304,20 @@ border-top:1px solid #e0e0e0;
 
 <h3>{{ case.title }}</h3>
 
+<p>{{ case.description }}</p>
+
 <p>
 Next Hearing:
 {{ case.next_hearing if case.next_hearing else "Not Scheduled" }}
 <br>
-Status:
-{{ case.status }}
+Status: <strong>{{ case.status }}</strong>
 </p>
+
+{% if case.advocate_id == None %}
+<a href="/accept-case/{{ case.case_id }}">
+<button>Accept Case</button>
+</a>
+{% endif %}
 
 </div>
 
@@ -323,9 +330,6 @@ Status:
 {% endif %}
 
 </div>
-
-</section>
-
 <!-- Client Management -->
 
 <section>

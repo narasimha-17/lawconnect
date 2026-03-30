@@ -116,7 +116,7 @@ def generate_ai_response(user_query, mode="chat"):
 
 
 # DB config
-app.config["SQLALCHEMY_DATABASE_URI"] = "mysql+pymysql://root:Surya7075@localhost/lawconnect_ai"
+app.config["SQLALCHEMY_DATABASE_URI"] = "mysql+pymysql://root:root123@localhost:3306/lawconnect_ai"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
 db = SQLAlchemy(app)
@@ -155,6 +155,15 @@ class StudentProgress(db.Model):
     module_id = db.Column(db.Integer, db.ForeignKey("modules.id"))
     progress = db.Column(db.Integer)
 
+class Campaign(db.Model):
+    __tablename__ = 'campaigns'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(255))
+    description = db.Column(db.Text)
+    location = db.Column(db.String(255))
+    date = db.Column(db.String(50))
+
 
 # ---------------- NGO MODEL ----------------
 class NGO(db.Model):
@@ -185,6 +194,14 @@ class Lawyer(db.Model):
     specialization = db.Column(db.String(150))
     phone = db.Column(db.String(15))
     ngo_id = db.Column(db.Integer, db.ForeignKey("ngo.ngo_id"))
+
+class AwarenessContent(db.Model):
+    __tablename__ = 'awareness_content'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(255))
+    category = db.Column(db.String(100))
+    description = db.Column(db.Text)
 
 
 # ---------------- CASE MODEL ----------------
@@ -271,34 +288,40 @@ def login():
         password = request.form.get("password")
         role = request.form.get("role")
 
-        print("FORM DATA ->", email, password, role)
+        # find user
+        user = User.query.filter_by(email=email).first()
 
-        user = User.query.filter_by(email=email, role=role).first()
-        print("USER FROM DB ->", user)
+        if user:
+            if user.password == password and user.role.lower() == role.lower():
 
-        if user and user.password == password:   # ✅ PLAIN TEXT CHECK
-            session["user_id"] = user.id
-            session["role"] = role
+                session["user_id"] = user.id
+                session["role"] = user.role.lower()
 
-            print("LOGIN SUCCESS")
+                role = user.role.lower()
 
-            if role == "student":
-                return redirect(url_for("student_dashboard"))
-            elif role == "advocate":
-                return redirect(url_for("advocate_dashboard"))
-            elif role == "citizen":
-                return redirect(url_for("citizen_dashboard"))
-            elif role == "ngo":
-                return redirect(url_for("ngo_dashboard"))
-            elif role == "institution":
-                return redirect(url_for("institutte_dashboard"))
-            else:
-                return redirect(url_for("index"))
+                if role == "student":
+                    return redirect("/student/dashboard")
+
+                elif role == "advocate":
+                    return redirect("/advocate/dashboard")
+
+                elif role == "citizen":
+                    return redirect("/citizen/dashboard")
+
+                elif role == "ngo":
+                    return redirect("/ngo/dashboard")
+
+                elif role == "institution":
+                    return redirect("/institution/dashboard")
+                print("DB role:", user.role)
+                print("Selected role:", role)
 
         error = "Invalid email, password, or role"
-        print("LOGIN FAILED")
 
     return render_template("login.html", error=error)
+
+
+
 def legal_chatbot(query):
     query = query.lower()
 
@@ -330,7 +353,77 @@ def citizen_dashboard():
 
     if request.method == "POST":
         query = request.form.get("query")
-        chatbot_reply = legal_chatbot(query)
+
+        # 🔹 Generate AI response
+        chatbot_reply = generate_ai_response(query, "chat")
+
+        # 🔹 Clean formatting symbols
+        chatbot_reply = chatbot_reply.replace("*", "")
+        chatbot_reply = chatbot_reply.replace("#", "")
+
+    # 🔹 Fetch logged-in citizen
+    citizen = User.query.get(session.get("user_id"))
+
+    return render_template(
+        "citizenDashboard.html",
+        citizen=citizen,
+        chatbot_reply=chatbot_reply
+    )
+# -------- AI LEGAL PROBLEM ANALYZER --------
+@app.route("/analyze-problem", methods=["POST"])
+def analyze_problem():
+
+    if session.get("role") != "citizen":
+        return redirect(url_for("login"))
+
+    problem = request.form.get("problem")
+
+    prompt = f"""
+You are an Indian legal advisor.
+
+A citizen describes a problem. Provide guidance in this format:
+
+1. Possible Legal Issue
+2. Relevant Law (mention section if possible)
+3. Suggested Action
+4. Authority to approach
+
+Problem:
+{problem}
+"""
+
+    response = model.generate_content(prompt)
+
+    analysis = response.text
+
+    citizen = User.query.get(session.get("user_id"))
+
+    return render_template(
+        "citizenDashboard.html",
+        citizen=citizen,
+        analysis=analysis
+    )
+@app.route("/file-case", methods=["POST"])
+def file_case():
+    if session.get("role") != "citizen":
+        return redirect(url_for("login"))
+
+    title = request.form.get("title")
+    description = request.form.get("description")
+
+    new_case = Case(
+        user_id=session.get("user_id"),
+        title=title,
+        description=description,
+        status="Pending"
+    )
+
+    db.session.add(new_case)
+    db.session.commit()
+
+    flash("Case submitted successfully!", "success")
+
+    return redirect(url_for("citizen_dashboard"))
 
     # 🔹 Fetch logged-in citizen from DB
     citizen = User.query.get(session.get("user_id"))
@@ -462,9 +555,9 @@ def advocate_dashboard():
     advocate = User.query.get(advocate_id)
 
     # Active cases
-    active_cases = Case.query.filter_by(
-        advocate_id=advocate_id
-    ).filter(Case.status != "Closed").all()
+    active_cases = Case.query.filter(
+    (Case.advocate_id == advocate_id) | (Case.advocate_id == None)
+).all()
 
     # Clients
     clients = Client.query.filter_by(
@@ -546,24 +639,41 @@ def legal_resources():
         "legal_resources.html",
         advocate=advocate
     )
+# ---------------- ACCEPT CASE ----------------
+@app.route("/accept-case/<int:case_id>")
+def accept_case(case_id):
+
+    if session.get("role") != "advocate":
+        return redirect(url_for("login"))
+
+    advocate_id = session.get("user_id")
+
+    case = Case.query.get(case_id)
+
+    if case:
+        case.advocate_id = advocate_id
+        case.status = "Assigned"
+        db.session.commit()
+
+    flash("Case accepted successfully!", "success")
+
+    return redirect(url_for("advocate_dashboard"))
 #--------------NGO DASHBOARD----------------
 @app.route("/ngo/dashboard")
 def ngo_dashboard():
-    if session.get("role") != "ngo":
+
+    if session.get("role").lower() != "ngo":
         return redirect(url_for("login"))
 
     user = User.query.get(session.get("user_id"))
     ngo = NGO.query.filter_by(email=user.email).first()
 
-    return render_template(
-        "ngoDashboard.html",
-        ngo=ngo
-    )
+    return render_template("ngoDashboard.html", ngo=ngo)
 
 #--------------INSTITUTION DASHBOARD----------------
 @app.route("/institution/dashboard")
-def institutte_dashboard():
-    if session.get("role") != "institution":
+def institution_dashboard():
+    if session.get("role").lower() != "institution":
         return redirect(url_for("login"))
 
     user = User.query.get(session.get("user_id"))
@@ -607,6 +717,28 @@ def register():
             return redirect(url_for("login"))
 
     return render_template("register.html", error=error)
+@app.route("/ngo/create-campaign", methods=["GET", "POST"])
+def create_campaign():
+
+    if request.method == "POST":
+        title = request.form.get("title")
+        description = request.form.get("description")
+        location = request.form.get("location")
+        date = request.form.get("date")
+
+        new_campaign = Campaign(
+            title=title,
+            description=description,
+            location=location,
+            date=date
+        )
+
+        db.session.add(new_campaign)
+        db.session.commit()
+
+        return "Campaign Added Successfully!"
+
+    return render_template("create_campaign.html")
 #---------------- CONTACT ----------------
 
 @app.route("/contact", methods=["GET", "POST"])
@@ -624,5 +756,41 @@ def contact():
 
     return render_template("contact.html")
 
+@app.route("/ngo/create-content", methods=["GET", "POST"])
+def create_content():
+
+    if request.method == "POST":
+        title = request.form.get("title")
+        category = request.form.get("category")
+        description = request.form.get("description")
+
+        new_content = AwarenessContent(
+            title=title,
+            category=category,
+            description=description
+        )
+
+        db.session.add(new_content)
+        db.session.commit()
+
+        return "Content Added Successfully!"
+
+    return render_template("create_content.html")
+
+@app.route("/ngo/view-content")
+def view_content():
+
+    content = AwarenessContent.query.all()
+
+    return render_template("view_content.html", content=content)
+
 if __name__ == "__main__":
     app.run(debug=True)
+
+class AwarenessContent(db.Model):
+    __tablename__ = 'awareness_content'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(255))
+    category = db.Column(db.String(100))
+    description = db.Column(db.Text)

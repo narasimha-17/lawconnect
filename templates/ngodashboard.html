@@ -59,6 +59,10 @@
       color: white;
       cursor: pointer;
     }
+
+    a {
+      text-decoration: none;
+    }
   </style>
 </head>
 <body>
@@ -72,22 +76,37 @@
 <!-- Legal Awareness Section -->
 <h2 class="section-title">📢 Legal Awareness</h2>
 <div class="grid">
-  <div class="card">
-    <h3>Create Awareness Content</h3>
-    <p>Upload simple legal rights information for citizens.</p>
-    <button>Create Content</button>
-  </div>
 
+  <!-- Create Awareness Content -->
+  <div class="card">
+  <h3>Create Awareness Content</h3>
+  <p>Upload simple legal rights information for citizens.</p>
+
+  <div style="display: flex; gap: 10px;">
+
+    <a href="/ngo/create-content">
+      <button>Create Content</button>
+    </a>
+
+    <a href="/ngo/view-content">
+      <button>View Content</button>
+    </a>
+
+  </div>
+</div>
+  <!-- Awareness Campaigns -->
   <div class="card">
     <h3>Awareness Campaigns</h3>
     <p>Run legal awareness programs and workshops.</p>
     <button>View Campaigns</button>
   </div>
+
 </div>
 
 <!-- Legal Aid Section -->
 <h2 class="section-title">⚖️ Legal Aid</h2>
 <div class="grid">
+
   <div class="card">
     <h3>Register Legal Aid Requests</h3>
     <p>Add citizens who need free legal assistance.</p>
@@ -99,6 +118,7 @@
     <p>Assign legal aid cases to volunteer advocates.</p>
     <button>Assign Lawyer</button>
   </div>
+
 </div>
 
 </body>

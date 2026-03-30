@@ -1,0 +1,9 @@
+<h2>Awareness Content</h2>
+
+{% for c in content %}
+  <div style="border:1px solid #ccc; padding:10px; margin:10px;">
+    <h3>{{ c.title }}</h3>
+    <p><b>Category:</b> {{ c.category }}</p>
+    <p>{{ c.description }}</p>
+  </div>
+{% endfor %}

@@ -248,14 +248,36 @@
       {% endif %}
     </div>
   </section>
+  <section>
+  <h2>⚖ AI Legal Problem Analyzer</h2>
+
+  <div class="card">
+
+    <form method="POST" action="/analyze-problem">
+      <textarea name="problem"
+      placeholder="Describe your legal issue..."
+      required></textarea>
+
+      <button type="submit">Analyze Problem</button>
+    </form>
+
+    {% if analysis %}
+      <p><strong>Legal Guidance:</strong></p>
+      <p>{{ analysis }}</p>
+    {% endif %}
+
+  </div>
+</section>
 
   <section>
-    <h2>📄 Case Filing (Demo)</h2>
-    <div class="card">
-      <input placeholder="Case Title">
-      <textarea placeholder="Describe your issue"></textarea>
-      <button disabled>Submit (Coming Soon)</button>
-    </div>
+    <h2>📄 Case Filing</h2>
+<div class="card">
+  <form method="POST" action="/file-case">
+    <input type="text" name="title" placeholder="Case Title" required>
+    <textarea name="description" placeholder="Describe your issue" required></textarea>
+    <button type="submit">Submit Case</button>
+  </form>
+</div>
   </section>
 
   <section>
