@@ -5,6 +5,7 @@ import re
 import google.generativeai as genai
 from dotenv import load_dotenv
 import os
+from sqlalchemy import and_, or_
 
 
 # ---------------- APP CONFIG ----------------
@@ -18,105 +19,110 @@ model = genai.GenerativeModel(
     system_instruction="You are a specialized Indian Legal AI Tutor. Provide precise citations from IPC, CrPC, and the Constitution. Adjust your tone based on the mode: Chat (helpful tutor), MCQ (test provider), Debate (critical opponent), or Trial (presiding judge)."
 )
 
+def is_legal_query(query):
+    legal_keywords = [
+        "law", "legal", "ipc", "crpc", "bns", "bnss", "constitution",
+        "court", "judge", "fir", "police", "bail", "section",
+        "article", "case", "rights", "advocate", "crime",
+        "punishment", "contract", "agreement", "cybercrime",
+        "harassment", "divorce", "property", "legal notice"
+    ]
+
+    query = query.lower()
+    return any(word in query for word in legal_keywords)
+
+
 def generate_ai_response(user_query, mode="chat"):
 
     try:
+        # 🔴 HARD BLOCK (MOST IMPORTANT)
+        if not is_legal_query(user_query):
+            return "⚠️ I can only assist with legal-related queries under Indian law."
+
         mode_instructions = {
 
-    "chat": """
-    You are a Senior Professor of Indian Law.
-    Provide structured academic explanations.
+            "chat": """
+You are a STRICT Indian Legal AI Assistant.
 
-    Format your response strictly as:
+Answer ONLY legal queries.
 
-    1. Definition
-    2. Relevant Statutory Provision (with section/article number)
-    3. Landmark Case (if applicable)
-    4. Practical Illustration
-    5. Key Legal Principle
+Follow STRICT format:
 
-    Use precise citations from:
-    - Constitution of India
-    - IPC / BNS
-    - CrPC / BNSS
+1. Definition
+2. Relevant Statutory Provision (with section/article number)
+3. Landmark Case
+4. Practical Illustration
+5. Key Legal Principle
 
-    Maintain clarity, professionalism, and doctrinal accuracy.
-    """,
+Use:
+- Constitution of India
+- IPC / BNS
+- CrPC / BNSS
 
+Maintain professional academic tone.
+""",
 
-    "mcq": """
-    You are an examiner preparing a UPSC Judiciary / Law Entrance Examination level question.
+            "mcq": """
+Generate ONE UPSC Judiciary level MCQ.
 
-    Generate ONE high-quality MCQ.
+Rules:
+- 4 options (A, B, C, D)
+- Only ONE correct
+- Do NOT reveal answer
+- End with: "Reply with A/B/C/D to answer."
+""",
 
-    Requirements:
-    - The question must test conceptual understanding, not rote memory.
-    - Provide 4 options labeled (A), (B), (C), (D).
-    - Only ONE option must be correct.
-    - Do NOT reveal the answer immediately.
-    - After the options, write:
-      "Reply with A/B/C/D to answer."
-    - Once user responds, evaluate and explain the correct answer with citation.
+            "debate": """
+Act as a senior constitutional lawyer opposing the user.
 
-    Ensure difficulty level is competitive-exam standard.
-    """,
+- Identify flaws
+- Use legal doctrines
+- Cite statutes/cases
 
+End with:
+"How do you respond to this legal objection?"
+""",
 
-    "debate": """
-    You are participating in a structured legal debate.
+            "trial": """
+Act as a High Court Judge.
 
-    Act as a senior constitutional lawyer opposing the user's argument.
+Structure:
 
-    Instructions:
-    - Identify weaknesses in the user's reasoning.
-    - Cite statutory provisions or judicial precedents.
-    - Use doctrinal analysis (e.g., Basic Structure Doctrine, Pith and Substance, Proportionality).
-    - Maintain professional tone.
-    - Challenge the argument logically and persuasively.
+1. Facts Presented
+2. Issues for Determination
+3. Relevant Law
+4. Judicial Reasoning
+5. Final Order
 
-    End with:
-    "How do you respond to this legal objection?"
-    """,
+Use formal judicial tone.
+"""
+        }
 
-
-    "trial": """
-    You are a High Court Judge presiding over a courtroom simulation.
-
-    Deliver judicial observations in structured format:
-
-    1. Facts Presented
-    2. Issues for Determination
-    3. Relevant Law
-    4. Judicial Reasoning
-    5. Interim / Final Order
-
-    Maintain formal judicial language.
-    Cite relevant constitutional or statutory provisions.
-    Avoid casual tone.
-    """
-}
-
+        # 🔹 Build prompt
         prompt = f"""
-        Mode: {mode}
+STRICT INSTRUCTION:
+- Answer ONLY legal queries.
+- If not legal → reply EXACTLY:
+"⚠️ I can only assist with legal-related queries under Indian law."
 
-        Instruction:
-        {mode_instructions.get(mode, mode_instructions["chat"])}
+Mode: {mode}
 
-        Question:
-        {user_query}
-        """
+Instruction:
+{mode_instructions.get(mode, mode_instructions["chat"])}
+
+User Query:
+{user_query}
+"""
 
         response = model.generate_content(prompt)
 
-        return response.text
+        return response.text.strip()
 
     except Exception as e:
         print("Gemini Error:", e)
-        return "⚠️ AI Tutor is temporarily unavailable. Please try again."
-
-
+        return "⚠️ AI system temporarily unavailable. Please try again."
 # DB config
-app.config["SQLALCHEMY_DATABASE_URI"] = "mysql+pymysql://root:Surya7075@localhost/lawconnect_ai"
+app.config["SQLALCHEMY_DATABASE_URI"] = "mysql+pymysql://root:Surya%407075@localhost:3306/lawconnect_ai"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
 db = SQLAlchemy(app)
@@ -155,6 +161,15 @@ class StudentProgress(db.Model):
     module_id = db.Column(db.Integer, db.ForeignKey("modules.id"))
     progress = db.Column(db.Integer)
 
+class Campaign(db.Model):
+    __tablename__ = 'campaigns'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(255))
+    description = db.Column(db.Text)
+    location = db.Column(db.String(255))
+    date = db.Column(db.String(50))
+
 
 # ---------------- NGO MODEL ----------------
 class NGO(db.Model):
@@ -186,6 +201,14 @@ class Lawyer(db.Model):
     phone = db.Column(db.String(15))
     ngo_id = db.Column(db.Integer, db.ForeignKey("ngo.ngo_id"))
 
+class AwarenessContent(db.Model):
+    __tablename__ = 'awareness_content'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(255))
+    category = db.Column(db.String(100))
+    description = db.Column(db.Text)
+
 
 # ---------------- CASE MODEL ----------------
 class Case(db.Model):
@@ -200,7 +223,8 @@ class Case(db.Model):
     ngo_id = db.Column(db.Integer)
     institution_id = db.Column(db.Integer)
     created_at = db.Column(db.DateTime)
-
+    case_pdf = db.Column(db.Text)
+    next_hearing = db.Column(db.Date) 
 
 # ---------------- CASE ASSIGNMENT MODEL ----------------
 class CaseAssignment(db.Model):
@@ -271,34 +295,40 @@ def login():
         password = request.form.get("password")
         role = request.form.get("role")
 
-        print("FORM DATA ->", email, password, role)
+        # find user
+        user = User.query.filter_by(email=email).first()
 
-        user = User.query.filter_by(email=email, role=role).first()
-        print("USER FROM DB ->", user)
+        if user:
+            if user.password == password and user.role.lower() == role.lower():
 
-        if user and user.password == password:   # ✅ PLAIN TEXT CHECK
-            session["user_id"] = user.id
-            session["role"] = role
+                session["user_id"] = user.id
+                session["role"] = user.role.lower()
 
-            print("LOGIN SUCCESS")
+                role = user.role.lower()
 
-            if role == "student":
-                return redirect(url_for("student_dashboard"))
-            elif role == "advocate":
-                return redirect(url_for("advocate_dashboard"))
-            elif role == "citizen":
-                return redirect(url_for("citizen_dashboard"))
-            elif role == "ngo":
-                return redirect(url_for("ngo_dashboard"))
-            elif role == "institution":
-                return redirect(url_for("institutte_dashboard"))
-            else:
-                return redirect(url_for("index"))
+                if role == "student":
+                    return redirect("/student/dashboard")
+
+                elif role == "advocate":
+                    return redirect("/advocate/dashboard")
+
+                elif role == "citizen":
+                    return redirect("/citizen/dashboard")
+
+                elif role == "ngo":
+                    return redirect("/ngo/dashboard")
+
+                elif role == "institution":
+                    return redirect("/institution/dashboard")
+                print("DB role:", user.role)
+                print("Selected role:", role)
 
         error = "Invalid email, password, or role"
-        print("LOGIN FAILED")
 
     return render_template("login.html", error=error)
+
+
+
 def legal_chatbot(query):
     query = query.lower()
 
@@ -321,6 +351,38 @@ def legal_chatbot(query):
         return "I can help with general legal queries related to divorce, FIR, cyber crime, bail, and property."
 
 # ---------------- CITIZEN DASHBOARD ----------------
+# 🔹 System Prompt (Legal-only restriction)
+LEGAL_SYSTEM_PROMPT = """
+You are a legal assistant chatbot specialized ONLY in legal topics.
+
+Rules:
+- Answer ONLY legal-related questions (laws, rights, FIR, police, courts, IPC, cybercrime, etc.)
+- If the question is NOT legal, politely refuse.
+- Do NOT answer general, technical, casual, or unrelated questions.
+
+If the query is not legal, respond with:
+"⚠️ I can only assist with legal-related queries. Please ask a legal question."
+
+Keep answers simple, clear, and helpful for common people.
+"""
+
+
+# 🔹 AI Response Function
+def generate_ai_response(query, system_prompt=None):
+    model = genai.GenerativeModel("gemini-3-flash-preview")
+
+    if system_prompt:
+        full_prompt = f"{system_prompt}\n\nUser: {query}"
+    else:
+        full_prompt = query
+
+    response = model.generate_content(full_prompt)
+
+    return response.text
+
+
+
+# 🔹 Route
 @app.route("/citizen/dashboard", methods=["GET", "POST"])
 def citizen_dashboard():
     if session.get("role") != "citizen":
@@ -330,16 +392,82 @@ def citizen_dashboard():
 
     if request.method == "POST":
         query = request.form.get("query")
-        chatbot_reply = legal_chatbot(query)
 
-    # 🔹 Fetch logged-in citizen from DB
+        if query:
+            chatbot_reply = generate_ai_response(
+                query,
+                system_prompt=LEGAL_SYSTEM_PROMPT
+            )
+
+            # 🔹 Clean unwanted formatting
+            chatbot_reply = chatbot_reply.replace("*", "")
+            chatbot_reply = chatbot_reply.replace("#", "")
+
+    # 🔹 Fetch logged-in citizen
     citizen = User.query.get(session.get("user_id"))
 
     return render_template(
         "citizenDashboard.html",
-        citizen=citizen,              # ✅ THIS WAS MISSING
+        citizen=citizen,
         chatbot_reply=chatbot_reply
     )
+# -------- AI LEGAL PROBLEM ANALYZER --------
+@app.route("/analyze-problem", methods=["POST"])
+def analyze_problem():
+
+    if session.get("role") != "citizen":
+        return redirect(url_for("login"))
+
+    problem = request.form.get("problem")
+
+    prompt = f"""
+You are an Indian legal advisor.
+
+A citizen describes a problem. Provide guidance in this format:
+
+1. Possible Legal Issue
+2. Relevant Law (mention section if possible)
+3. Suggested Action
+4. Authority to approach
+
+Problem:
+{problem}
+"""
+
+    response = model.generate_content(prompt)
+
+    analysis = response.text
+
+    citizen = User.query.get(session.get("user_id"))
+
+    return render_template(
+        "citizenDashboard.html",
+        citizen=citizen,
+        analysis=analysis
+    )
+@app.route("/file-case", methods=["POST"])
+def file_case():
+    if session.get("role") != "citizen":
+        return redirect(url_for("login"))
+
+    title = request.form.get("title")
+    description = request.form.get("description")
+
+    new_case = Case(
+        user_id=session.get("user_id"),
+        title=title,
+        description=description,
+        status="Pending"
+    )
+
+    db.session.add(new_case)
+    db.session.commit()
+
+    flash("Case submitted successfully!", "success")
+
+    return redirect(url_for("citizen_dashboard"))
+
+  
 
 # ---------------- Student DASHBOARD ----------------
 @app.route("/student/dashboard")
@@ -435,9 +563,18 @@ def ask_ai():
     if not question:
         return jsonify({"error": "No question provided"}), 400
 
+    # 🔴 HARD BLOCK (ADD THIS)
+    if not is_legal_query(question):
+        return jsonify({
+            "response": "⚠️ I can only assist with legal-related queries under Indian law."
+        })
+
+    # ✅ Only legal queries reach AI
     response = generate_ai_response(question, mode)
-    response = re.sub(r"\*\*(.*?)\*\*", r"\1", response)  # remove bold
-    response = response.replace("*", "")  # remove remaining stars
+
+    # Clean formatting
+    response = re.sub(r"\*\*(.*?)\*\*", r"\1", response)
+    response = response.replace("*", "")
 
     # Save chat history
     chat_entry = ChatHistory(
@@ -449,8 +586,10 @@ def ask_ai():
     db.session.commit()
 
     return jsonify({"response": response})
-
 #----------------- ADVOCATE DASHBOARD ----------------
+from sqlalchemy import and_, or_
+from datetime import datetime
+
 @app.route("/advocate/dashboard")
 def advocate_dashboard():
     if session.get("role") != "advocate":
@@ -458,32 +597,55 @@ def advocate_dashboard():
 
     advocate_id = session.get("user_id")
 
-    # Get advocate info
+    # ✅ Advocate info
     advocate = User.query.get(advocate_id)
 
-    # Active cases
-    active_cases = Case.query.filter_by(
-        advocate_id=advocate_id
-    ).filter(Case.status != "Closed").all()
-
-    # Clients
-    clients = Client.query.filter_by(
-        advocate_id=advocate_id
+    # ✅ Active cases (exclude rejected + sort by hearing date)
+    active_cases = Case.query.filter(
+        and_(
+            or_(Case.advocate_id == advocate_id, Case.advocate_id == None),
+            Case.status != "Rejected"
+        )
+    ).order_by(
+        Case.next_hearing.is_(None),   # 🔥 NULLs last
+        Case.next_hearing.asc()        # 🔥 earliest first
     ).all()
 
-    # Upcoming appointments
+    # ✅ Clients (from cases)
+    clients = User.query.join(
+        Case, User.id == Case.user_id
+    ).filter(
+        Case.advocate_id == advocate_id,
+        Case.status != "Rejected"
+    ).distinct().all()
+
+    # ✅ Upcoming appointments
     appointments = Appointment.query.filter_by(
         advocate_id=advocate_id
     ).order_by(Appointment.appointment_date.asc()).limit(5).all()
+
+    # ✅ Today's hearings (NEW 🔥)
+    today = datetime.now().date()
+
+    todays_hearings = Case.query.filter(
+        Case.advocate_id == advocate_id,
+        Case.next_hearing != None
+    ).all()
+
+    todays_hearings = [
+        c for c in todays_hearings 
+        if c.next_hearing == today   # ✅ FIX
+    ]
 
     return render_template(
         "advocateDashboard.html",
         advocate=advocate,
         active_cases=active_cases,
         clients=clients,
-        appointments=appointments
+        appointments=appointments,
+        todays_hearings=todays_hearings,   # 🔥 pass this
+        now=datetime.now()                 # 🔥 for template use
     )
-
 @app.route("/advocate/my-cases")
 def advocate_cases():
 
@@ -503,6 +665,29 @@ def advocate_cases():
         advocate=advocate,
         cases=cases
     )
+
+@app.route("/advocate/reject-case/<int:case_id>")
+def reject_case(case_id):
+
+    if session.get("role") != "advocate":
+        return redirect(url_for("login"))
+
+    advocate_id = session.get("user_id")
+
+    case = Case.query.get(case_id)
+
+    if case and case.advocate_id == advocate_id:
+        case.advocate_id = None   # 🔥 unassign advocate
+        case.status = "Rejected"  # optional
+        db.session.commit()
+
+        flash("Case rejected successfully!", "success")
+
+    else:
+        flash("Error occurred.", "danger")
+
+    return redirect(url_for("advocate_cases"))
+
 @app.route("/advocate/clients")
 def clients():
 
@@ -522,7 +707,35 @@ def clients():
         clients=clients,
         advocate=advocate
     )
-@app.route("/advocate/ai-assistant")
+# 🔹 System Prompt (Strict Legal Assistant)
+LEGAL_SYSTEM_PROMPT = """
+You are a STRICT legal research assistant for advocates.
+
+- Answer ONLY legal-related queries (case law, IPC, CrPC, contracts, legal drafting, etc.)
+- Provide structured, professional answers
+- If NOT legal → respond EXACTLY:
+"⚠️ I can only assist with legal-related queries."
+
+Keep responses precise and useful for legal professionals.
+"""
+
+
+
+
+def generate_ai_response(query, system_prompt=None):
+    model = genai.GenerativeModel("gemini-2.5-flash")
+
+    if system_prompt:
+        full_prompt = f"{system_prompt}\n\nUser Query:\n{query}"
+    else:
+        full_prompt = query
+
+    response = model.generate_content(full_prompt)
+    return response.text
+
+
+# 🔹 Updated Route
+@app.route("/advocate/ai-assistant", methods=["GET", "POST"])
 def ai_assistant():
     if session.get("role") != "advocate":
         return redirect(url_for("login"))
@@ -530,10 +743,27 @@ def ai_assistant():
     advocate_id = session.get("user_id")
     advocate = User.query.get(advocate_id)
 
+    ai_reply = None
+
+    if request.method == "POST":
+        query = request.form.get("query")
+
+        if query:
+            ai_reply = generate_ai_response(
+                query,
+                system_prompt=LEGAL_SYSTEM_PROMPT
+            )
+
+            # Clean formatting
+            ai_reply = ai_reply.replace("*", "")
+            ai_reply = ai_reply.replace("#", "")
+
     return render_template(
         "Ai-leagal_research.html",
-        advocate=advocate
+        advocate=advocate,
+        ai_reply=ai_reply
     )
+
 @app.route("/advocate/legal-resources")
 def legal_resources():
     if session.get("role") != "advocate":
@@ -546,35 +776,98 @@ def legal_resources():
         "legal_resources.html",
         advocate=advocate
     )
+# ---------------- ACCEPT CASE ----------------
+@app.route("/accept-case/<int:case_id>")
+def accept_case(case_id):
+
+    if session.get("role") != "advocate":
+        return redirect(url_for("login"))
+
+    advocate_id = session.get("user_id")
+
+    case = Case.query.get(case_id)
+
+    if case:
+        case.advocate_id = advocate_id
+        case.status = "Assigned"
+        db.session.commit()
+
+    flash("Case accepted successfully!", "success")
+
+    return redirect(url_for("advocate_dashboard"))
 #--------------NGO DASHBOARD----------------
 @app.route("/ngo/dashboard")
 def ngo_dashboard():
-    if session.get("role") != "ngo":
+
+    if session.get("role").lower() != "ngo":
         return redirect(url_for("login"))
 
     user = User.query.get(session.get("user_id"))
     ngo = NGO.query.filter_by(email=user.email).first()
 
-    return render_template(
-        "ngoDashboard.html",
-        ngo=ngo
-    )
+    return render_template("ngoDashboard.html", ngo=ngo)
 
 #--------------INSTITUTION DASHBOARD----------------
-@app.route("/institution/dashboard")
-def institutte_dashboard():
+
+
+
+@app.route("/institution/dashboard", methods=["GET", "POST"])
+def institution_dashboard():
     if session.get("role") != "institution":
         return redirect(url_for("login"))
 
     user = User.query.get(session.get("user_id"))
-    institution = Institution.query.filter_by(email=user.email).first()
+    institution = Institution.query.first()
+
+    # ✅ HANDLE FORM SUBMISSION
+    if request.method == "POST":
+        title = request.form.get("title")
+        description = request.form.get("description")
+        pdf_link = request.form.get("pdf_link")
+        file = request.files.get("module_file")
+
+        final_link = None
+
+        # 🔥 OPTION 1: FILE UPLOAD
+        if file and file.filename != "":
+            upload_folder = "static/uploads"
+
+            if not os.path.exists(upload_folder):
+                os.makedirs(upload_folder)
+
+            filepath = os.path.join(upload_folder, file.filename)
+            file.save(filepath)
+
+            # store relative path (BEST PRACTICE)
+            final_link = f"uploads/{file.filename}"
+
+        # 🔥 OPTION 2: LINK INPUT
+        elif pdf_link:
+            final_link = pdf_link
+
+        # ✅ SAVE TO DATABASE
+        if title and final_link:
+            new_module = Module(
+                title=title,
+                description=description,
+                pdf_link=final_link
+            )
+
+            db.session.add(new_module)
+            db.session.commit()
+
+    # ✅ GET STUDENTS
+    students = User.query.filter_by(role="student").all()
+
+    # ✅ GET MODULES
+    modules = Module.query.all()
 
     return render_template(
         "instituttedashboard.html",
-        institution=institution
+        institution=institution,
+        students=students,
+        modules=modules
     )
-
-
 
 # ---------------- LOGOUT ----------------
 @app.route("/logout")
@@ -607,6 +900,28 @@ def register():
             return redirect(url_for("login"))
 
     return render_template("register.html", error=error)
+@app.route("/ngo/create-campaign", methods=["GET", "POST"])
+def create_campaign():
+
+    if request.method == "POST":
+        title = request.form.get("title")
+        description = request.form.get("description")
+        location = request.form.get("location")
+        date = request.form.get("date")
+
+        new_campaign = Campaign(
+            title=title,
+            description=description,
+            location=location,
+            date=date
+        )
+
+        db.session.add(new_campaign)
+        db.session.commit()
+
+        return "Campaign Added Successfully!"
+
+    return render_template("create_campaign.html")
 #---------------- CONTACT ----------------
 
 @app.route("/contact", methods=["GET", "POST"])
@@ -624,5 +939,41 @@ def contact():
 
     return render_template("contact.html")
 
+@app.route("/ngo/create-content", methods=["GET", "POST"])
+def create_content():
+
+    if request.method == "POST":
+        title = request.form.get("title")
+        category = request.form.get("category")
+        description = request.form.get("description")
+
+        new_content = AwarenessContent(
+            title=title,
+            category=category,
+            description=description
+        )
+
+        db.session.add(new_content)
+        db.session.commit()
+
+        return "Content Added Successfully!"
+
+    return render_template("create_content.html")
+
+@app.route("/ngo/view-content")
+def view_content():
+
+    content = AwarenessContent.query.all()
+
+    return render_template("view_content.html", content=content)
+
 if __name__ == "__main__":
     app.run(debug=True)
+
+class AwarenessContent(db.Model):
+    __tablename__ = 'awareness_content'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(255))
+    category = db.Column(db.String(100))
+    description = db.Column(db.Text)

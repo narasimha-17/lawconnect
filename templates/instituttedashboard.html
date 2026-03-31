@@ -1,219 +1,302 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Institution Dashboard | LawConnect AI</title>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
-  <style>
-    :root {
-      --primary-navy: #0f172a;
-      --brand-blue: #3b82f6;
-      --brand-teal: #06b6d4;
-      --bg-light: #f1f5f9;
-      --card-white: rgba(255, 255, 255, 0.95);
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LawConnect AI | Institution Management</title>
 
-    body {
-      font-family: 'Plus Jakarta Sans', sans-serif;
-      background-color: var(--bg-light);
-      margin: 0;
-      display: flex;
-    }
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
 
-    /* Side Navigation */
-    .sidebar {
-      width: 260px;
-      height: 100vh;
-      background: var(--primary-navy);
-      color: white;
-      padding: 30px 20px;
-      position: fixed;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
+    <style>
+        :root {
+            --primary-dark: #042a2b;
+            --primary-accent: #00a8e8;
+            --secondary-accent: #ffd166;
+            --background-light: #f8fafc;
+            --text-dark: #1e2a32;
+            --white: #ffffff;
+            --border: #e2e8f0;
+        }
 
-    .sidebar h2 { font-weight: 800; font-size: 1.4rem; margin-bottom: 30px; letter-spacing: -1px; }
-    .sidebar-item { padding: 12px 15px; border-radius: 8px; cursor: pointer; transition: 0.3s; opacity: 0.7; }
-    .sidebar-item:hover { background: rgba(255,255,255,0.1); opacity: 1; }
-    .sidebar-item.active { background: var(--brand-blue); opacity: 1; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
 
-    /* Main Content Area */
-    .content {
-      margin-left: 300px;
-      padding: 40px;
-      width: 100%;
-      max-width: 1200px;
-    }
+        body {
+            display: flex;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #e6f7ff, #ffffff);
+            color: var(--text-dark);
+        }
 
-    /* Welcome Banner with Glassmorphism */
-    .welcome-banner {
-      background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
-      color: white;
-      padding: 40px;
-      border-radius: 20px;
-      position: relative;
-      overflow: hidden;
-      margin-bottom: 40px;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-    }
+        /* Sidebar Navigation */
+        .sidebar-nav {
+            width: 280px;
+            background: linear-gradient(180deg, var(--primary-dark), #002230);
+            color: #fff;
+            padding: 2rem 1.5rem;
+            box-shadow: 4px 0 15px rgba(0,0,0,0.2);
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            height: 100vh;
+            z-index: 100;
+        }
 
-    .welcome-banner h1 { margin: 0; font-size: 2rem; font-weight: 800; }
-    .welcome-banner p { opacity: 0.8; margin-top: 10px; max-width: 500px; }
-    
-    .floating-shape {
-      position: absolute;
-      right: -50px;
-      top: -50px;
-      width: 200px;
-      height: 200px;
-      background: var(--brand-blue);
-      filter: blur(80px);
-      opacity: 0.4;
-    }
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 3rem;
+            text-decoration: none;
+            color: white;
+        }
 
-    .section-title {
-      font-size: 1.2rem;
-      font-weight: 800;
-      color: var(--primary-navy);
-      margin: 40px 0 20px;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
+        .logo span { color: var(--secondary-accent); }
 
-    /* Improved Grid and Cards */
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 24px;
-    }
+        .nav-links a {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            padding: 0.8rem 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            transition: 0.3s;
+        }
 
-    .card {
-      background: var(--card-white);
-      padding: 24px;
-      border-radius: 16px;
-      border: 1px solid rgba(226, 232, 240, 0.8);
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-    }
+        .nav-links a.active {
+            background: rgba(0, 168, 232, 0.2);
+            color: var(--secondary-accent);
+        }
 
-    .card:hover {
-      transform: translateY(-8px);
-      box-shadow: 0 20px 25px -5px rgba(0,0,0,0.05);
-      border-color: var(--brand-blue);
-    }
+        /* Main Content */
+        .main-content {
+            margin-left: 280px;
+            flex-grow: 1;
+            padding: 3rem 4rem;
+        }
 
-    .card h3 {
-      font-size: 1.1rem;
-      color: #1e293b;
-      margin-top: 0;
-    }
+        .section-header {
+            margin-bottom: 2rem;
+            border-bottom: 2px solid var(--border);
+            padding-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
 
-    .card p {
-      font-size: 0.95rem;
-      color: #64748b;
-      line-height: 1.5;
-    }
+        h2 { color: var(--primary-dark); font-weight: 600; }
 
-    /* Modern Buttons */
-    .btn {
-      padding: 10px 16px;
-      border: none;
-      border-radius: 8px;
-      font-weight: 600;
-      cursor: pointer;
-      font-size: 0.85rem;
-      transition: 0.2s;
-      width: fit-content;
-    }
+        /* Student List Table */
+        .data-card {
+            background: var(--white);
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+            margin-bottom: 3rem;
+        }
 
-    .btn-primary { background: #eff6ff; color: var(--brand-blue); }
-    .btn-primary:hover { background: var(--brand-blue); color: white; }
+        .student-list {
+            width: 100%;
+            border-collapse: collapse;
+        }
 
-    .ai-tag {
-      background: linear-gradient(90deg, #f0fdf4, #dcfce7);
-      color: #166534;
-      padding: 4px 10px;
-      border-radius: 6px;
-      font-size: 0.7rem;
-      font-weight: 800;
-      text-transform: uppercase;
-      margin-bottom: 12px;
-      display: inline-block;
-    }
-  </style>
+        .student-list th {
+            text-align: left;
+            padding: 12px;
+            color: #64748b;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .student-list td {
+            padding: 15px 12px;
+            border-bottom: 1px solid #f1f5f9;
+            font-weight: 500;
+        }
+
+        .student-list tr:last-child td { border-bottom: none; }
+
+        /* Upload Section */
+        .upload-zone {
+            border: 2px dashed var(--primary-accent);
+            background: #f0f9ff;
+            border-radius: 16px;
+            padding: 3rem;
+            text-align: center;
+            transition: 0.3s;
+            cursor: pointer;
+        }
+
+        .upload-zone:hover {
+            background: #e0f2fe;
+            border-color: var(--primary-dark);
+        }
+
+        .upload-zone i {
+            font-size: 3rem;
+            color: var(--primary-accent);
+            margin-bottom: 1rem;
+        }
+
+        .file-input { display: none; }
+
+        .btn-upload {
+            background: var(--primary-dark);
+            color: white;
+            padding: 12px 30px;
+            border-radius: 8px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 1.5rem;
+        }
+
+        .btn-upload:hover { background: var(--primary-accent); }
+
+        /* Profile Bottom */
+        .profile-footer {
+            margin-top: auto;
+            padding-top: 1rem;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .avatar {
+            width: 40px;
+            height: 40px;
+            background: var(--secondary-accent);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary-dark);
+            font-weight: bold;
+        }
+    </style>
 </head>
+
 <body>
 
-<div class="sidebar">
-  <h2>LawConnect AI</h2>
-  <div class="sidebar-item active">🏠 Dashboard</div>
-  <div class="sidebar-item">👥 Students</div>
-  <div class="sidebar-item">📜 Courses</div>
-  <div class="sidebar-item">🤖 AI Lab</div>
-  <div class="sidebar-item">📊 Reports</div>
-</div>
+<aside class="sidebar-nav">
+    <div class="logo">⚖️ LawConnect <span>AI</span></div>
+    <nav class="nav-links">
+        <a href="#" class="active"><i class="fas fa-university"></i> Institution Portal</a>
+        <a href="{{ url_for('logout') }}"><i class="fas fa-sign-out-alt"></i> Logout</a>
+    </nav>
 
-<div class="content">
-  <div class="welcome-banner">
-    <div class="floating-shape"></div>
-    <h1>Welcome back, XYZ Law Institute 🎓</h1>
-    <p>You have 124 students active today. 4 new mock trials were completed this morning.</p>
-  </div>
+    <div class="profile-footer">
+        <div class="avatar">{{ institution.name[0] if institution else "I" }}</div>
+        <span style="font-size: 0.9rem;">{{ institution.name if institution else "Institution" }}</span>
+    </div>
+</aside>
 
-  <h2 class="section-title">👨‍🎓 Student Management</h2>
-  <div class="grid">
-    <div class="card">
-      <div>
-        <h3>Enroll Students</h3>
-        <p>Onboard new batches of law students and assign them to departments.</p>
-      </div>
-      <button class="btn btn-primary">Manage Students</button>
+<main class="main-content">
+    
+    <div class="section-header">
+        <h2><i class="fas fa-user-graduate"></i> Enrolled Students</h2>
+        <span style="color: var(--primary-accent); font-weight: 600;">Total: {{ students|length }}</span>
     </div>
-    <div class="card">
-      <div>
-        <h3>Student Progress</h3>
-        <p>Monitor real-time engagement and exam scores across all active modules.</p>
-      </div>
-      <button class="btn btn-primary">View Analytics</button>
-    </div>
-  </div>
 
-  <h2 class="section-title">🤖 AI Training Modules</h2>
-  <div class="grid">
-    <div class="card">
-      <div>
-        <span class="ai-tag">AI Powered</span>
-        <h3>AI Legal Tutor</h3>
-        <p>24/7 student support for case law citations and legal terminology.</p>
-      </div>
-      <button class="btn btn-primary">Launch Tutor</button>
+    <div class="data-card">
+        <table class="student-list">
+            <thead>
+                <tr>
+                    <th>Student Name</th>
+                    <th>Email Address</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for student in students %}
+                <tr>
+                    <td>{{ student.name }}</td>
+                    <td>{{ student.email }}</td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="2" style="text-align: center; color: #94a3b8;">No students enrolled yet.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
     </div>
-    <div class="card">
-      <div>
-        <span class="ai-tag">Simulation</span>
-        <h3>Mock Case Trials</h3>
-        <p>Simulated environments for students to practice litigation skills.</p>
-      </div>
-      <button class="btn btn-primary">Start Trial</button>
-    </div>
-  </div>
 
-  <h2 class="section-title">📊 Institutional Insights</h2>
-  <div class="grid">
-    <div class="card">
-      <div>
-        <h3>Performance Reports</h3>
-        <p>Detailed breakdown of institutional growth and student success rates.</p>
-      </div>
-      <button class="btn btn-primary">Export PDF</button>
+    <div class="section-header">
+        <h2><i class="fas fa-cloud-upload-alt"></i> Upload Academic Module</h2>
     </div>
-  </div>
-</div>
+
+    <div class="data-card">
+      <form action="{{ url_for('institution_dashboard') }}" method="POST">
+
+    <div class="upload-zone" style="cursor: default;">
+        <i class="fas fa-link"></i>
+
+        <h3>Add Module Link</h3>
+        <p>Paste PDF/DOCX link</p>
+
+        <input 
+            type="text" 
+            name="pdf_link" 
+            placeholder="https://example.com/file.pdf"
+            style="width: 80%; padding: 10px; margin-top: 10px;"
+            required
+        >
+
+        <input 
+            type="text" 
+            name="title" 
+            placeholder="Module Title"
+            style="width: 80%; padding: 10px; margin-top: 10px;"
+            required
+        >
+
+        <input 
+            type="text" 
+            name="title" 
+            placeholder="Description"
+            style="width: 80%; padding: 10px; margin-top: 10px;"
+            required
+        >
+    </div>
+
+    <div style="text-align: right;">
+        <button type="submit" class="btn-upload">Publish Module</button>
+    </div>
+
+</form>
+    </div>
+
+</main>
+
+<script>
+    // Update display name when file is selected
+    function updateFileName() {
+        const input = document.getElementById('fileInput');
+        const display = document.getElementById('fileName');
+        if (input.files.length > 0) {
+            display.innerText = "Selected: " + input.files[0].name;
+            display.style.color = "#00a8e8";
+        }
+    }
+
+    // Optional: Add drag and drop visual feedback
+    const zone = document.querySelector('.upload-zone');
+    zone.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        zone.style.background = "#e0f2fe";
+    });
+    zone.addEventListener('dragleave', () => {
+        zone.style.background = "#f0f9ff";
+    });
+</script>
 
 </body>
 </html>
